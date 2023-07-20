@@ -1,0 +1,77 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+
+public class Main {
+    static int max = 0;
+    static int N;
+    static int num;
+    static int[] arrNum;
+    static void dfs(int now, int cnt, List<Integer> lst){
+        //탈출조건 : swap횟수가 정해진 횟수가 될 때 현재값을 구하고 기존 max값과 비교해서 값 변경
+        if(cnt == N) {
+            now = 0;
+            //현재값 도출
+            for (int digit : lst) {
+                now *= 10;
+                now += digit;
+            }
+            max = Math.max(max,now);
+            return;
+        }
+        //
+        for(int k =0; k<lst.size()-1;k++) {
+            for(int l =k+1; l<lst.size();l++) {
+                Collections.swap(lst, k, l);
+//                swap(lst, k, l);
+
+                dfs(now, cnt+1, lst);
+//                if(value.contains(now)){
+//
+//                } else{
+//                    dfs(now, cnt+1, lst);
+//                }
+//                max = Collections.max(value);
+                Collections.swap(lst, k, l);
+            }
+        }
+    }
+
+
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int tc = Integer.parseInt(st.nextToken());
+        for(int i = 0; i<tc; i++) {
+            st = new StringTokenizer(br.readLine());
+            num = Integer.parseInt(st.nextToken());
+            N = Integer.parseInt(st.nextToken());
+
+            arrNum = Stream.of(String.valueOf(num).split("")).mapToInt(Integer::parseInt).toArray(); //배열로 변환
+
+            //List화 (swap메서드 사용목적)
+            List<Integer> list = new ArrayList<>();
+            for (int j : arrNum) {
+                list.add(j);
+            }
+
+            //주어진 swap횟수가 주어진 값보다 클 경우 입력값의 자리수만큼만 옮겨도 무방함. ==> 시간 최적화
+            if(N > list.size()){
+                N = list.size();
+            }
+
+	        dfs(0, 0, list);
+
+	        System.out.println(String.format("#%d %d",i + 1,max));
+
+            max = 0;
+        }
+    }
+}
+
