@@ -7,62 +7,49 @@ public class Main {
 	static int N, M;
 	static int x, y, nx, ny;
 	static boolean[][] Map;
-	static boolean[] visited;
+	static int[] visited; //방문체크 겸 깊이(촌수값)저장 배열
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		N = Integer.parseInt(st.nextToken()) + 1; //노드 수 N+1
+		N = Integer.parseInt(st.nextToken()) + 1; //사람 수 N
 		
 		st = new StringTokenizer(br.readLine());
-		x = Integer.parseInt(st.nextToken()); //촌수관계 x
-		y = Integer.parseInt(st.nextToken()); //촌수관계 y
+		x = Integer.parseInt(st.nextToken()); //출력을 위한 관계 x
+		y = Integer.parseInt(st.nextToken()); //출력을 위한 관계 x
 		
 		st = new StringTokenizer(br.readLine());
 		M = Integer.parseInt(st.nextToken()); //입력 M
-		Map = new boolean[N][N]; //맵 할당
-		visited = new boolean[N]; //방문배열 할당
-		
-		for(int i=0; i<M; i++) { //양방향 그래프 생성
+		Map = new boolean[N][N]; //맵 초기화
+		visited = new int[N]; //방문배열 초기화
+		for(int i=0; i<M; i++) { //맵 입력
 			st = new StringTokenizer(br.readLine());
 			nx = Integer.parseInt(st.nextToken());
 			ny = Integer.parseInt(st.nextToken());
 			Map[nx][ny] = true;
-			Map[ny][nx] = true;
+			Map[ny][nx] = true; //무향그래프임으로 반대도 연결
 		}
 		
 		bfs(x);
+		
+		if(visited[y] == 0) System.out.println(-1); //해당 촌수에 방문한적이 없다면 깊이 -1 출력
+		else System.out.println(visited[y] - 1); //해당 촌수에 방문했을 경우에 깊이 값 출력 + 방문체크를 위해 초기에 1을 주었기 때문에 -1을 한값이 정답
+		
 	}
 	
-	private static void bfs(int x) { //시작 노드
-		Queue<Index> q = new LinkedList<>(); //큐 생성
-		Index idx = new Index(x, 0); //객체 생성
-		q.offer(idx); //객체를 큐에 삽입
-		visited[x] = true; //방문체크
+	private static void bfs(int x) { //x : 촌수 중 하나의 값
+		Queue<Integer> q = new LinkedList<>(); //큐생성
+		q.offer(x); //촌수 시작값 offer
+		visited[x] = 1; //방문체크를 위해 1 삽입
 		
-		while(!q.isEmpty()) {
-			Index id = q.poll();
-			if(id.idx == y) { //꺼낸 촌수관계가 입력과 일치하면
-				System.out.println(id.cnt); //촌수값 출력
-				System.exit(0); //종료
-			}
-			for(int i =0; i<N; i++) { //완전탐색
-				if(Map[id.idx][i] && !visited[i]) { //연결되있는 노드 && 방문하지 않은 노드
-					Index newid = new Index(i, id.cnt + 1); //노드 번호 및 촌수값 객체 생성
-					q.offer(newid); //객체 삽입
-					visited[i] = true; //방문체크
+		while(!q.isEmpty()) { //큐가 빌 때까지
+			int id = q.poll(); //큐에서 하나의 노드값을 꺼내고
+			for(int i =0; i<N; i++) { //해당 노드와 연결되어 있는 노드의 번호를 탐색
+				if(Map[id][i] && visited[i] == 0) { //방문하지 않고 해당 노드가 연결되어있다면
+					q.offer(i); //큐에 삽입
+					visited[i] = visited[id] + 1; //해당 큐와 같은 visited배열에 현재 깊이 +1의 값을 추가
 				}
 			}
 		}
-		System.out.println(-1); //연결되지 않은 촌수관계일 경우
-	}
-}
-class Index { //DFS와 같이 매개변수처럼 촌수값을 관리하기 위한 클래스
-	int idx; //노드 번호
-	int cnt; //촌수값
-	public Index(int idx, int cnt) {
-		super();
-		this.idx = idx;
-		this.cnt = cnt;
 	}
 }
