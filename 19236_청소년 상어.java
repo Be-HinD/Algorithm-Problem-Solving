@@ -4,136 +4,117 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static int num, v, Max; //idx : 물고기 순서를 나타내는 인덱스, Max : 최종 결과값
-    static Fish[][] map; //물고기 정보맵
-    static List<Fish> list;
-    static int[] dx = new int[] {-1, -1,0, 1, 1, 1, 0, -1};
-    static int[] dy = new int[] {0, -1, -1, -1, 0, 1, 1, 1};
-    static Fish[] arr; //물고기의 정보를 담을 배열
+    static int ans;
+    static Fish[][] map;
+    static Fish[] fishArr = new Fish[17]; //물고기들만 저장할 배열
+    static int[] dx = new int[]{-1,-1,0,1,1,1,0,-1}; //방향벡터
+    static int[] dy = new int[]{0,-1,-1,-1,0,1,1,1}; //12시부터 반시계 방향
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
-        list = new ArrayList<>();
-        map = new Fish[4][4];
-        arr = new Fish[16];
-        for(int i=0; i<4; i++) { //물고기의 객체를 가지는 4*4 배열 입력
+
+        map = new Fish[4][4]; //고정크기 맵
+
+        for(int i=0; i<4; i++) { //맵 입력
             st = new StringTokenizer(br.readLine());
             for(int j=0; j<4; j++) {
-                num = Integer.parseInt(st.nextToken());
-                v = Integer.parseInt(st.nextToken());
-                Fish f = new Fish(i, j, num, v-1, true);
-                list.add(f);
+                //입력 : 물고기 번호, 방향
+                int num = Integer.parseInt(st.nextToken());
+                int dist = Integer.parseInt(st.nextToken()) - 1; //방향벡터 인덱스 시작을 0으로 하기위해
+                Fish f = new Fish(i,j,num,dist,true); //객체 생성
+                fishArr[num] = new Fish(i,j,num,dist,true);
                 map[i][j] = f;
             }
         }
-        Collections.sort(list, new Comparator<Fish>() {
-            @Override
-            public int compare(Fish o1, Fish o2) {
-                return o1.num - o2.num;
-            }
-        });
-        Shark pinkpong = new Shark(0, 0, map[0][0].vector, map[0][0].num); //상어의 정보 초기화 : 0,0의 정보를 담음
+
+        //상어는 항상 0,0으로 이동
         map[0][0].life = false;
-        dfs(map, pinkpong);
-        System.out.println(Max);
+        fishArr[map[0][0].num].life = false; //물고기 배열도 같이 갱신
+        ans = map[0][0].num; //0,0에서부터 못갈 경우를 위한 전처리
+        move(map, 0, 0); //물고기 이동
+
+        dfs(0, 0, map[0][0].num, map[0][0].dist);
+        System.out.println(ans);
     }
-    private static void dfs(Fish[][] map, Shark shark ) { //매개변수로 원본배열의 카피본, 새롭게 갱신된 상어정보
-        //백트래킹을 위한 물고기 배열 카피
-        Fish[][] copy = new Fish[map.length][];
-        for (int i = 0; i < map.length; i++) {
+
+    private static void dfs(int x, int y, int sum, int dist) { //상어좌표, 먹은 물고기 합, 상어방향
+        Fish[][] copy = new Fish[4][4]; //copy == 현재 스택 기준 이동하기 전 맵 상태(원복할 맵)
+        for(int i=0; i<4; i++) { //깊은 복사
             copy[i] = map[i].clone();
         }
+        //배열 또한 원복 카피배열 생성
+        Fish[] copyArr = new Fish[17];
+        for(int i=1; i<17; i++) { //깊은 복사
+            copyArr[i] = new Fish(fishArr[i].x, fishArr[i].y, fishArr[i].num, fishArr[i].dist, fishArr[i].life);
+        }
+//        copyArr = fishArr.clone(); //잘못된 깊은 복사
 
-        //물고기 이동
-        //물고기 번호 순대로 기준잡고 8방탐색 및 이동(swap)
-        //물고기의 객체를 리스트에서 가져오면 정보변경이 안되기 때문에 맵에서 직접가져와야함.... == 바뀜 ㅋ
-        for(int i=0; i<list.size(); i++) {
-            Fish fish = list.get(i);
-            if(fish.life == false) continue;
-            //8방탐색
-            int vector = fish.vector; //입력받을 때 -1시켜서 방향벡터dx,dy랑 맞춰야했는데 여기서 -1 해줘서 인덱스에러발생
-            for(int j=0; j<8; j++) {
-                int nx = fish.x + dx[(vector+j) % 8]; //+j 안붙이고 dx[vector%8]로 돌려서 한참 찾았음
-                int ny = fish.y + dy[(vector+j) % 8];
-                //null체크
-                if(nx < 0 || nx > 3 || ny < 0 || ny > 3) continue;
-                //가려는 좌표에 상어가 있는지
-                if(nx == shark.x && ny == shark.y) continue;
-                //물고기 이동 -> 물고기 객체의 x, y 좌표 및 copy배열의 정보 교환
-                if(copy[nx][ny].life == false) { //가려는 칸이 빈칸일 경우
-                    fish.x = nx; //좌표 변경
-                    fish.y = ny; //좌표 변경
-                    copy[nx][ny] = fish; //현재 칸의 물고기만 이동
-                    break; //이동 후 break를 통해 다음 번호 물고기 이동을 시켜야함!! break문 없으면 계속 이동
-                } else { //가려는 칸에 다른 물고기가 있는 경우, 물고기방향은 불변인줄 알고 한참 찾음.
-                    //현재 물고기 좌표 복사
-                    int temp_x = fish.x;
-                    int temp_y = fish.y;
-                    Fish swap_fish = copy[nx][ny]; //가려는 칸의 물고기 정보
-                    //현재 물고기 이동
-                    fish.x = nx; //객체 좌표 변경
-                    fish.y = ny; //객체 좌표 변경
-                    fish.vector = (vector+j) % 8; //현재 물고기의 방향을 바뀐 값으로 갱신
-                    copy[nx][ny] = fish; //맵 변경
-                    swap_fish.x = temp_x; //swap_fish의 좌표정보를 기존 fish의 좌표로 변경
-                    swap_fish.y = temp_y; //swap_fish의 좌표정보를 기존 fish의 좌표로 변경
-                    copy[temp_x][temp_y] = swap_fish; //복사해논 정보로 swap
-                    break; //이동 후 break를 통해 다음 번호 물고기 이동을 시켜야함!! break문 없으면 계속 이동
+        for(int i=0; i<4; i++) { //상어는 최대 3칸거리만 움직일 수 있음.
+            x += dx[dist];
+            y += dy[dist];
+            if(x<0 || y<0 || x>3 || y>3) { //기저 조건 : 상어의 진행 경로에서 더 이상 먹을 수 있는 물고기가 없을 때
+                ans = Math.max(ans, sum); //결과값 갱신
+                return;
+            }
+
+            Fish f = map[x][y]; //먹을 물고기의 정보
+            if(f.life) { //이동할 좌표의 물고기가 살아있는 경우
+                f.life = false; //물고기 냠냠
+                fishArr[f.num].life = false; //배열 값 또한 변경
+                move(map, x, y); //물고기 이동
+                dfs(x, y, sum+f.num, f.dist); //재귀 호출
+                for(int j=0; j<4; j++) { //깊은 복사 //map = copy 하는 순간 둘은 동일객체가 되어 덮어쓰기 되버림.
+                    map[j] = copy[j].clone();
+                }
+                //배열 또한 원복
+                for(int j=1; j<17; j++) { //깊은 복사 //배열도 똑같이 fishArr = copyArr 하는 순간 덮어쓰기 되버림.
+                    fishArr[j] = new Fish(copyArr[j].x, copyArr[j].y, copyArr[j].num, copyArr[j].dist, copyArr[j].life);
                 }
             }
         }
-        //상어 이동 : 현재 vector 기준으로 8방탐색 및 널 체크 및 재귀호출
-        for(int i=0; i<4; i++) {
-            for(int j=0; j<4; j++) {
-                if(copy[i][j].life) System.out.print("1       ");
-                else System.out.print("0      ");
-            }
-            System.out.println();
-        }
-        System.out.println("=================");
-        int vector = shark.vector;
-        int nx = shark.x;
-        int ny = shark.y;
-        for(int i=0; i<4; i++) {
-            nx += dx[vector];
-            ny += dy[vector];
-            if(nx < 0 || nx > 3 || ny < 0 || ny > 3) break; //null 체크
-            if(copy[nx][ny].life) { //해당 좌표의 물고기가 살아있는 경우
-                copy[nx][ny].life = false;
-                dfs(copy, new Shark(nx, ny, copy[nx][ny].vector, shark.eat_Fish + copy[nx][ny].num));
-                copy[nx][ny].life = true; //백트래킹
-            }
-        }
-        //기저조건 : 상어의 현재좌표로부터 이동가능한 칸이 없는 경우
-        System.out.println(shark.eat_Fish);
-        Max = Math.max(Max, shark.eat_Fish);
     }
 
-
-}
-class Shark { //상어 클래스
-    int x;
-    int y;
-    int vector;
-    int eat_Fish;
-    Shark(int x, int y, int vector, int eat_Fish) {
-        this.x = x;
-        this.y = y;
-        this.vector = vector;
-        this.eat_Fish = eat_Fish;
+    private static void move(Fish[][] map, int x, int y) { //맵, 상어좌표
+        for(int i=1; i<fishArr.length; i++) {
+            Fish f = fishArr[i];
+            if(f.life) { //물고기가 살아있는 경우에만
+                for(int j=0; j<8; j++) { //방향을 바꿔가며
+                    int dist = (f.dist + j) % 8;
+                    int nx = f.x + dx[dist];
+                    int ny = f.y + dy[dist];
+                    if (nx < 0 || ny < 0 || nx > 3 || ny > 3) continue;//맵 밖 전처리
+                    if (nx == x && ny == y) continue; //상어위치 전처리
+                    //이동 가능한 시점 //첫 시도는 물고기가 살아있거나 없거나로 전처리했는데 다시생각해보니 그럴필요없이 로직은 동일함...
+                    int nextFish = map[nx][ny].num; //이동대상 물고기 번호
+                    f.dist = dist; //현재 물고기의 방향 갱신
+                    //SWAP 주의할 점 : 배열의 값도 변경해줘야함
+                    Fish temp = new Fish(map[nx][ny].x, map[nx][ny].y, map[nx][ny].num, map[nx][ny].dist, map[nx][ny].life); //다음위치의 객체를 임시저장
+                    map[nx][ny] = new Fish(f.x, f.y, f.num, f.dist, f.life); //다음위치에 현재 객체를 저장
+                    fishArr[nextFish].x = f.x;
+                    fishArr[nextFish].y = f.y;
+                    map[f.x][f.y] = temp;
+                    fishArr[i].x = nx;
+                    fishArr[i].y = ny;
+                    fishArr[i].dist = dist;
+                    break;
+                }
+            }
+        }
     }
 }
-class Fish { //물고기 클래스
+
+class Fish { //좌표, 번호, 방향, 생사유무
     int x;
     int y;
     int num;
-    int vector;
+    int dist;
     boolean life;
-    Fish(int x, int y, int num, int vector, boolean life) {
+    Fish(int x, int y, int num, int dist, boolean life) {
         this.x = x;
         this.y = y;
         this.num = num;
-        this.vector = vector;
+        this.dist = dist;
         this.life = life;
     }
 }
