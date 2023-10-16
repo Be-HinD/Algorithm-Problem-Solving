@@ -8,10 +8,10 @@ import java.util.StringTokenizer;
 
 public class Main {
     static int N, M, D, res;
-    static int[] combiAns;
+    static int[] combiAns; //조합 결과배열
     static int[] dx = new int[]{0,-1,1,0}; //왼쪽부터 탐색
     static int[] dy = new int[]{-1,0,0,1};
-    static int[][] map, copyMap, attackPoint;
+    static int[][] map, copyMap, attackPoint; //맵, 복사맵, 공격할 좌표
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -51,25 +51,23 @@ public class Main {
             }
         }
     }
-
     private static void logic() {
-        int cnt = 0;
+        int cnt = 0; //잡은 적의 개수 카운트 변수
         while(true) {
             //3명의 궁수가 쏠 자리를 저장
             for(int i=0; i<3; i++) {
                 int[] idx = new int[]{N-1, combiAns[i]}; //궁수의 좌표
                 attackPoint[i] = bfs(idx[0]-1, idx[1]); //타겟 적의 좌표 탐색
             }
-            //한번에 제거 cnt 체크
+            //한번에 제거, cnt 체크
             for(int i=0; i<3; i++) {
                 int[] idx = attackPoint[i];
-                if(idx[0] == -1) continue;
+                if(idx[0] == -1) continue; //공격할 적을 찾지 못한 경우
                 if(copyMap[idx[0]][idx[1]] == 1) {
                     copyMap[idx[0]][idx[1]] = 0;
                     cnt++;
                 }
             }
-
             //적 아래로 한칸씩 Move
             for(int i=N-1; i>=0; i--) {
                 for(int j=0; j<M; j++) {
@@ -82,8 +80,6 @@ public class Main {
                     }
                 }
             }
-
-
             //적 남아있는지 확인
             boolean flag = false;
             for(int i=0; i<N-1; i++) {
@@ -96,7 +92,7 @@ public class Main {
                 if(flag) break;
             }
             if(!flag) {
-                res = Math.max(res, cnt);
+                res = Math.max(res, cnt); //최대값 갱신
                 break;
             }
         }
@@ -105,14 +101,14 @@ public class Main {
     private static int[] bfs(int x, int y) {
         Queue<int[]> q = new ArrayDeque<>();
         boolean[][] v = new boolean[N-1][M];
-        if(copyMap[x][y] == 1) { //적이 있다면
+        if(copyMap[x][y] == 1) { //시작 지점에 적이 있다면
             return new int[]{x,y};
         }
         v[x][y] = true;
         q.offer(new int[]{x,y, 1});
         while(!q.isEmpty()) {
             int[] idx = q.poll();
-            if(idx[2] > D-1) continue;
+            if(idx[2] > D-1) continue; //공격 범위를 초과할 경우
             for(int i=0; i<4; i++) {
                 int nx = idx[0] + dx[i];
                 int ny = idx[1] + dy[i];
