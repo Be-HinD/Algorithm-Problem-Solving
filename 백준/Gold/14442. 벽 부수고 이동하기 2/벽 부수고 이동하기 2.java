@@ -1,63 +1,69 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
-import java.io.*;
 
-public class Main{
-	static int N;
-	static int M;
-	static int K;
-	static boolean [][][] v;
-	static int [][] map;
-	static StringTokenizer stk;
-	public static void main(String [] args)throws Exception {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		stk = new StringTokenizer(bf.readLine());
-		N = Integer.parseInt(stk.nextToken());
-		M = Integer.parseInt(stk.nextToken());
-		K = Integer.parseInt(stk.nextToken());
-		v = new boolean[N][M][K+1];
-		map = new int[N][M];
-		for(int i= 0;i<N;i++) {
-			String str = bf.readLine();
-			for(int j= 0;j<M;j++) {
-				map[i][j] = str.charAt(j)-'0';
-			}
-		}
-		if(N == 1 && M == 1) {
-			System.out.println(1);
-			// 시작과 동시에 도착할 수도 있다는 것 확인하기
-		}else {
-			System.out.println(bfs());			
-		}
-	}
-	static int[] dy = {-1,1,0,0};
-	static int[] dx = {0,0,-1,1};
-	static int bfs() {
-		int time = -1;
-		Queue<int []> queue = new LinkedList<>();
-		queue.add(new int[] {0,0,1,0});
-		v[0][0][0] = true;
-		while(!queue.isEmpty()) {
-			int [] now = queue.poll();
-			int bc = now[3];
-			int c  = now[2];
-			for(int k = 0;k<4;k++) {
-				int ny = now[0]+dy[k];
-				int nx = now[1]+dx[k];
-				if(ny >= N || ny < 0 || nx>=M || nx<0 ) continue;
-				if(ny == N-1 && nx == M-1) {
-					return c+1;
-				}
-				if(map[ny][nx] == 1 && bc+1 <= K && !v[ny][nx][bc]) {
-					v[ny][nx][bc] = true;
-					queue.add(new int [] {ny, nx, c+1, bc+1});
-				}
-				
-				if(map[ny][nx] == 0 && !v[ny][nx][bc]) {
-					v[ny][nx][bc] = true;
-					queue.add(new int [] {ny, nx, c+1, bc});
-				}
-			}	
-		}
-		return time;
-	}
+public class Main {
+    static int N, M, K, res;
+    static int[] dx = new int[]{1,-1,0,0};
+    static int[] dy = new int[]{0,0,1,-1};
+    static int[][] map;
+    static boolean[][][] v;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+
+        map = new int[N][M]; //맵 입력
+        for(int i=0; i<N; i++) {
+            String input = br.readLine();
+            for(int j=0; j<M; j++) {
+                map[i][j] = input.charAt(j) - '0';
+            }
+        }
+
+        v = new boolean[N][M][K+1]; //부술 수 있는 개수만큼
+
+        if(N == 1 && M == 1) { //시작 전처리
+            System.out.println(1);
+            return;
+        }
+
+        bfs();
+
+        if(res == 0) System.out.println(-1);
+        else System.out.println(res);
+    }
+    private static void bfs() {
+        Queue<int[]> q = new ArrayDeque<>();
+        q.offer(new int[]{0,0,1,K}); //좌표, 시간, 벽 부순 개수
+        v[0][0][K] = true;
+
+        while(!q.isEmpty()) {
+            int[] idx = q.poll();
+
+            int t = idx[2]; //경과시간
+            int vi = idx[3]; //벽 부순 개수
+
+            if(idx[0] == N-1 && idx[1] == M-1) { //기저조건
+                res = idx[2];
+                return;
+            }
+            for(int i=0; i<4; i++) {
+                int nx = idx[0] + dx[i];
+                int ny = idx[1] + dy[i];
+                if(nx<0 || ny<0 || nx>=N || ny>=M || v[nx][ny][vi]) continue;
+                if(map[nx][ny] == 1 && idx[3] > 0) { //벽이 있고 && 부술 수 있는 경우
+                    v[nx][ny][vi] = true;
+                    q.offer(new int[]{nx,ny,t+1, vi-1}); //부술 때 마다 새로운 방문배열로
+                } else if(map[nx][ny] == 0){ //벽이 없을 경우
+                    v[nx][ny][vi] = true;
+                    q.offer(new int[]{nx,ny,t+1, vi});
+                }
+            }
+        }
+    }
 }
