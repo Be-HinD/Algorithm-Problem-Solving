@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-
 public class Main {
     static int N, M, K, res;
     static int[] dx = new int[]{1,-1,0,0};
@@ -16,7 +15,6 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
-
         map = new int[N][M]; //맵 입력
         for(int i=0; i<N; i++) {
             String input = br.readLine();
@@ -24,16 +22,13 @@ public class Main {
                 map[i][j] = input.charAt(j) - '0';
             }
         }
-
         v = new boolean[N][M][K+1]; //부술 수 있는 개수만큼
-
         if(N == 1 && M == 1) { //시작 전처리
             System.out.println(1);
             return;
         }
-
+        
         bfs();
-
         if(res == 0) System.out.println(-1);
         else System.out.println(res);
     }
@@ -44,7 +39,6 @@ public class Main {
 
         while(!q.isEmpty()) {
             int[] idx = q.poll();
-
             int t = idx[2]; //경과시간
             int vi = idx[3]; //벽 부순 개수
 
