@@ -1,37 +1,77 @@
 import java.util.*;
 class Solution {
-    static int[][] loseMap, winMap;
+    static int[][] map;
+    static boolean[] vv;
     public int solution(int n, int[][] results) {
         int answer = 0;
-
-        /* 승리 전적표 채우기 */
-        boolean[][] map = new boolean[n + 1][n + 1];
-        for (int[] i : results)
-            map[i[0]][i[1]] = true;
-
-        /* 플루이드 와샬 알고리즘을 통해 승리 채우기 */
-        for (int k = 1; k <= n; ++k) { // 가운데 선수
-            for (int i = 1; i <= n; ++i) { // 강한 선수
-                for (int j = 1; j <= n; ++j) { // 약한 선수
-                    if (map[i][k] && map[k][j]) {
-                        map[i][j] = true;
-                    }
-                }
-            }
+        
+        map = new int[n][n];
+        for(int i=0; i<results.length; i++) {
+            int x = results[i][0] - 1;
+            int y = results[i][1] - 1;
+            map[x][y] = 1; //앞 노드가 이긴 사람
         }
-
-        /* 모든 전적을 알 수 있는 선수의 수 구하기 */
-        for (int i = 1; i <= n; ++i) {
-            boolean possible = true;
-            for (int j = 1; j <= n; ++j) {
-                if (i != j && !map[i][j] && !map[j][i]) {
-                    possible = false;
-                    break;
-                }
+        for(int i=0; i<n; i++) {
+            vv = new boolean[n];
+            winBfs(i, map, n);
+            loseBfs(i, map, n); //질 때의 경우
+            boolean flag = true;
+            for(int j=0; j<vv.length; j++) {
+                if(!vv[j]) flag = false;
             }
-            answer = possible ? answer + 1 : answer;
+            if(flag) answer++;
         }
-
         return answer;
+    }
+    private static void winBfs(int x, int[][] m, int n) {
+        Queue<Integer> q = new ArrayDeque<>();
+        boolean[][] v = new boolean[n][n];
+        vv[x] = true;
+        for(int i=0; i<n; i++) {
+            if(x == i) continue;
+            if(m[x][i] == 1 && !v[x][i]) { //내가 이긴 사람 찾기
+                q.offer(i);
+                vv[i] = true;
+            }
+        }
+        while(!q.isEmpty()) { //내게 진 사람들이 이기는 사람 찾기
+            int idx = q.poll();
+            for(int i=0; i<n; i++) {
+                if(idx == i) continue;
+                if(m[idx][i] == 1 && !v[idx][i]) { //이긴 사람을 추가
+                    vv[i] = true;
+                    q.offer(i);
+                    v[idx][i] = true;
+                }
+            }
+        }
+        return;
+    }
+    
+    private static void loseBfs(int x, int[][] m, int n) {
+        Queue<Integer> q = new ArrayDeque<>();
+        boolean[][] v = new boolean[n][n];
+        vv[x] = true;
+        for(int i=0; i<n; i++) {
+                if(x == i) continue;
+                if(m[i][x] == 1 && !v[i][x]) { //나를 이기는 사람 찾기
+                    q.offer(i);
+                    vv[i] = true;
+                    v[x][i] = true;
+                }
+            }
+        
+        while(!q.isEmpty()) {
+            int idx = q.poll();
+            for(int i=0; i<n; i++) { //나를 이긴 사람에게 이긴 사람 찾기
+                if(idx == i) continue;
+                if(m[i][idx] == 1 && !v[i][idx]) {
+                    q.offer(i);
+                    vv[i] = true;
+                    v[i][idx] = true;
+                }
+            }
+        }
+        return;
     }
 }
