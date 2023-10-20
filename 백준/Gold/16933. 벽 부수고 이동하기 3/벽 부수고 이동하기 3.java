@@ -59,7 +59,7 @@ public class Main {
                 if(nx<0 || ny<0 || nx>=N || ny>=M || v[nx][ny][vi]) continue;
                 if(day == 0) { //낮일 때
                     if(map[nx][ny] == 1 && idx[3] > 0) { //벽이 있고 && 부술 수 있는 경우
-                        v[nx][ny][vi] = true;
+                        v[nx][ny][vi] = true; //부술 때 현재기준 방문체크! (다음 방문배열 기준 체크할 경우 메모리초과 발생)
                         q.offer(new int[]{nx,ny,t+1, vi-1, 1}); //부술 때 마다 새로운 방문배열로
                     } else if(map[nx][ny] == 0){ //벽이 없을 경우
                         v[nx][ny][vi] = true;
