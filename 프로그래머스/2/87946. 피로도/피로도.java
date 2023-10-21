@@ -10,12 +10,16 @@ class Solution {
         Arrays.sort(map, new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
-                return o2[1] - o1[1];
+                return o1[0] - o2[0]; //최소 필요 피로도 기준 오름차순 정렬
             }
         });
+        
         if(k < map[0][0]) return 0; //아무 던전도 들어갈 수 없는 경우
         
-        for(int i=1; i<=dungeons.length; i++) { //배열 길이만큼 순열
+        for(int i=0; i<map.length; i++) {
+            System.out.println(Arrays.toString(map[i]));
+        }
+        for(int i=1; i<=map.length; i++) { //배열 길이만큼 순열
             arr = new int[i]; //순열 배열 길이 초기화
             v = new boolean[i]; //방문배열 초기화
             Perm(0);
@@ -38,15 +42,16 @@ class Solution {
             }
         }
     }
+    
     private static void logic() {
         int pirodo = initPirodo;
         int cnt = 0;
         for(int i=0; i<arr.length; i++) {
             int idx = arr[i];
             //idx번째 던전을 탐색
-            if(pirodo >= map[idx][0]) { //만족할 때
-                pirodo -= map[idx][1];
-                cnt++;
+            if(pirodo >= map[idx][0]) { //입장할 수 있을 때
+                pirodo -= map[idx][1]; //피로도 감소
+                cnt++; //입장 던전 회수 증가
             }
         }
         res = Math.max(res, cnt);
