@@ -26,19 +26,20 @@ public class Main {
 
         Xtoi = new int[N+1];
         Arrays.fill(Xtoi, Integer.MAX_VALUE);
-        Xbfs();
+        xDijkstra(); //X로부터의 각 i마을까지의 최소비용 갱신
+        
         for(int i=1; i<=N; i++) {
             int sum = 0;
-            if(i == X) continue;
-            //i번 학생이 i번째 마을에서 출발해서 x마을까지 도착하는데 걸리는 최소비용 구하기
-            sum = bfs(i, X) + Xtoi[i];
+            if(i == X) continue; //예외처리
+            //i번 학생이 i번째 마을에서 출발해서 x마을까지 도착하는데 걸리는 최소비용 + X에서 i마을 까지의 최소경로
+            sum = Dijkstra(i, X) + Xtoi[i];
             res = Math.max(res, sum);
         }
 
         System.out.println(res);
     }
 
-    private static void Xbfs() {
+    private static void xDijkstra() { //X로부터 각 i마을들에 대해 최소경로 탐색
         PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
@@ -52,7 +53,7 @@ public class Main {
             int[] idx = pq.poll(); //최소 소요시간부터 꺼내서
             int cur = idx[0]; //현재 마을
             for(int i=1; i<N+1; i++) {
-                if(map[cur][i] + idx[1] > Xtoi[i]) continue;
+                if(map[cur][i] + idx[1] > Xtoi[i]) continue; //최소값보다 클 경우
                 if(cur == i || map[cur][i] == 0) continue; //같은 정점이거나 길이 없는 경우
                 Xtoi[i] = idx[1] + map[cur][i]; //최소비용 갱신
                 pq.offer(new int[]{i,idx[1]+map[cur][i]}); //다음 경로 추가
@@ -60,7 +61,7 @@ public class Main {
         }
     }
 
-    private static int bfs(int start, int dest) {
+    private static int Dijkstra(int start, int dest) {
         PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
