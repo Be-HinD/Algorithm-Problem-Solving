@@ -1,36 +1,45 @@
 import java.util.*;
 class Solution {
-    static int[] arr; //조합 배열
-    static int N, piro, res; //조합 개수
-    static int[][] map;
-    static boolean[] v;
+    static int[] arr; //순열 배열
+    static int res, initPirodo; //결과값
+    static int[][] map; //입력 trans 전역으로
+    static boolean[] v; //순열 방문체크
     public int solution(int k, int[][] dungeons) {
-        map = dungeons;
-        for(int i=1; i<=dungeons.length; i++) {
-            piro = k;
-            arr = new int[i];
-            v = new boolean[i];
-            Comb(0);
+        map = dungeons; //입력배열을 전역멤버변수로 변환
+        initPirodo = k; //입력 피로도 전역멤버변수로 변환
+        Arrays.sort(map, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o2[1] - o1[1];
+            }
+        });
+        if(k < map[0][0]) return 0; //아무 던전도 들어갈 수 없는 경우
+        
+        for(int i=1; i<=dungeons.length; i++) { //배열 길이만큼 순열
+            arr = new int[i]; //순열 배열 길이 초기화
+            v = new boolean[i]; //방문배열 초기화
+            Perm(0);
         }
         return res;
     }
     
-    private static void Comb(int cnt) {
+    private static void Perm(int cnt) {
         if(cnt == arr.length) {
             //조합 완성
+            if(res == arr.length) return;
             logic();
         } else {
             for(int i=0; i<arr.length; i++) {
                 if(v[i]) continue;
                 arr[cnt] = i;
                 v[i] = true;
-                Comb(cnt+1);
+                Perm(cnt+1);
                 v[i] = false;
             }
         }
     }
     private static void logic() {
-        int pirodo = piro;
+        int pirodo = initPirodo;
         int cnt = 0;
         for(int i=0; i<arr.length; i++) {
             int idx = arr[i];
