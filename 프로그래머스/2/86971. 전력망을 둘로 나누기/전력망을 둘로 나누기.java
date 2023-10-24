@@ -3,24 +3,15 @@ class Solution {
     static int res;
     static boolean[] v;
     public int solution(int n, int[][] wires) {
-        int answer = -1;
-        res = Integer.MAX_VALUE;
+        res = Integer.MAX_VALUE; //결과값 초기화
         for(int i=0; i<wires.length; i++) {
             v = new boolean[n+1];
             int temp = wires[i][1];
             wires[i][1] = -1;
             int cntA = bfs(1, wires); //첫번째부터 탐색
-            if(i == 5) {
-                for(int k=0; k<v.length; k++) {
-                    if(v[k]) System.out.print(1 + " ");
-                    else System.out.print(0 + " ");
-                }
-            }
-            System.out.println();
-            int cntB = n - cntA;
+            int cntB = n - cntA; //나머지 그룹은 n-A
             wires[i][1] = temp; //백트래킹
-            System.out.println(cntA + " " + cntB);
-            res = Math.min(res, Math.abs(cntA - cntB));
+            res = Math.min(res, Math.abs(cntA - cntB)); //최소값 갱신
         }
         return res;
     }
@@ -36,6 +27,7 @@ class Solution {
             
             for(int i=0; i<wires.length; i++) {
                 if(wires[i][1] == -1) continue;
+                //양방향 그래프이기 때문에 앞 뒤로 확인.
                 if(wires[i][0] == idx || wires[i][1] == idx) {
                     if(!v[wires[i][1]]) {
                     q.offer(wires[i][1]);
