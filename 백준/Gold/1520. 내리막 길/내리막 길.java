@@ -1,0 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+    static int N, M;
+    static int[] dx = new int[]{-1,1,0,0};
+    static int[] dy = new int[]{0,0,1,-1};
+    static int[][] map, dp;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken()); //정점의 개수
+        M = Integer.parseInt(st.nextToken()); //간선의 개수
+
+        map = new int[N][M];
+        for(int i=0; i<N; i++) { //맵 입력
+            st = new StringTokenizer(br.readLine());
+            for(int j=0; j<M; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        dp = new int[N][M];
+        for(int i=0; i<N; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+
+        dfs(0,0);
+        System.out.println(dp[0][0]);
+    }
+
+    private static int dfs(int x, int y) {
+        if(x == N-1 && y == M-1) {
+            return 1;
+        }
+
+        if (dp[x][y] != -1) {
+            return dp[x][y];
+        }
+
+        //동작부
+        dp[x][y] = 0;
+        for(int i=0; i<4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if(nx<0 || ny<0 || nx>=N || ny>=M || map[nx][ny] >= map[x][y]) continue;
+            dp[x][y] += dfs(nx, ny);
+        }
+        return dp[x][y];
+    }
+}
