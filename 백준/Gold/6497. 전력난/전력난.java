@@ -20,17 +20,18 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        while(true) {
+        while(true) { //TestCase
             st = new StringTokenizer(br.readLine(), " ");
             N = Integer.parseInt(st.nextToken());
             M = Integer.parseInt(st.nextToken());
-            if(N == 0 && M == 0) break;
+            
+            if(N == 0 && M == 0) break; //기저조건
 
             list = new ArrayList<>();
-            for (int i = 0; i < N; i++) list.add(new ArrayList<>());
+            for (int i = 0; i < N; i++) list.add(new ArrayList<>()); //인접리스트 생성
 
-            sum = 0;
-            for (int i = 0; i < M; i++) {
+            sum = 0; //전체 가중치의 합
+            for (int i = 0; i < M; i++) { //입력
                 st = new StringTokenizer(br.readLine());
                 int x = Integer.parseInt(st.nextToken());
                 int y = Integer.parseInt(st.nextToken());
@@ -43,7 +44,7 @@ public class Main {
 
             v = new boolean[N];
             res = 0;
-            
+
             Prim();
 
             System.out.println(sum - res);
@@ -67,7 +68,7 @@ public class Main {
             if(v[vertex]) continue;
 
             v[vertex] = true;
-            res += cur[1];
+            res += cur[1]; //최소경로의 가중치 값을 누적
 
             for(Node n : list.get(vertex)) {
                 pq.offer(new int[]{n.v, n.w});
