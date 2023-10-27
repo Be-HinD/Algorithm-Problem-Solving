@@ -40,12 +40,7 @@ public class Main {
     }
 
     private static int bfs() {
-        PriorityQueue<int[]> q = new PriorityQueue<>(new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-               return o1[2] - o2[2];
-            }
-        });
+        Queue<int[]> q = new ArrayDeque<>();
         q.offer(new int[]{sx,sy,0,1});
 
         while(!q.isEmpty()) {
