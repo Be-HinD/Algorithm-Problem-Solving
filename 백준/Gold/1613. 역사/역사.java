@@ -31,8 +31,20 @@ public class Main {
             dist[y][x] = 1; //역방향
         }
 
+//        System.out.println("****플로이드 전****");
+//        for(int i=0; i<N; i++) {
+//            System.out.println(Arrays.toString(dist[i]));
+//        }
+
         Floyd();
-        
+
+//        System.out.println();
+//        System.out.println("****플로이드 후****");
+//
+//        for(int i=0; i<N; i++) {
+//            System.out.println(Arrays.toString(dist[i]));
+//        }
+
         K = Integer.parseInt(br.readLine());
 
         for(int i=0; i<K; i++) {
