@@ -31,20 +31,8 @@ public class Main {
             dist[y][x] = 1; //역방향
         }
 
-//        System.out.println("****플로이드 전****");
-//        for(int i=0; i<N; i++) {
-//            System.out.println(Arrays.toString(dist[i]));
-//        }
-
         Floyd();
-
-//        System.out.println();
-//        System.out.println("****플로이드 후****");
-//
-//        for(int i=0; i<N; i++) {
-//            System.out.println(Arrays.toString(dist[i]));
-//        }
-
+        
         K = Integer.parseInt(br.readLine());
 
         for(int i=0; i<K; i++) {
@@ -60,9 +48,11 @@ public class Main {
     }
 
     private static void Floyd() {
-        for(int l=0; l<N; l++) { //지나갈 수 있는 간선 개수
-            for(int i=0; i<N; i++) {  //정점
-                for(int j=0; j<N; j++) { //정점
+        //모든 정점(i,j)들에 대해 l정점을 들리고 갈 수 있는 경우의 수를 체크 
+        for(int l=0; l<N; l++) {
+            for(int i=0; i<N; i++) {
+                for(int j=0; j<N; j++) {
+                    //각 좌표들에 대해서 정방향인지 양방향인지 체크
                     if(dist[i][l] == 1 && dist[l][j] == 1) {
                         dist[i][j] = 1;
                     } else if(dist[i][l] == -1 && dist[l][j] == -1) {
