@@ -4,9 +4,6 @@ class Solution {
     static int[] supo2 = new int[]{2, 1, 2, 3, 2, 4, 2, 5};
     static int[] supo3 = new int[]{3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
     public int[] solution(int[] answers) {
-        int[] answer = new int[3];
-        
-        //1번 수포자
         int cnt1 = 0;
         int cnt2 = 0;
         int cnt3 = 0;
