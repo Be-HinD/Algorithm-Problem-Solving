@@ -12,12 +12,10 @@ class Solution {
         int cnt3 = 0;
         int pointer = 0;
         int p = -1;
-        while(true) {
-            if(answers[pointer] == supo1[(p+1) % 5]) cnt1++;
-            if(answers[pointer] == supo2[(p+1) % 8]) cnt2++;
-            if(answers[pointer++] == supo3[(p+1) % 10]) cnt3++;
-            p++;
-            if(pointer == answers.length) break;
+        for(int i=0; i<answers.length; i++) {
+            if(answers[i] == supo1[i % supo1.length]) cnt1++;
+            if(answers[i] == supo2[i % supo2.length]) cnt2++;
+            if(answers[i] == supo3[i % supo3.length]) cnt3++;
         }
 
         int Max = Math.max(Math.max(cnt1, cnt2), cnt3);
