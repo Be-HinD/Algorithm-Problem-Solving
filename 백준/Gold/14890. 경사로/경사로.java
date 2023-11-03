@@ -48,7 +48,7 @@ public class Main {
             else if(diff == 1) { //다음 계단이 한 계단 낮다
                 for(int j = 1; j <= L; j++) { //내려가는 경사로를 설치할 수 있는지 확인한다.
                     if(i + j >= N || isIncline[i + j]) return false;
-                    if(map[row][i] - 1 != map[row][i + j]) return false;
+                    if(map[row][i] != map[row][i + j] + 1) return false;
                     isIncline[i + j] = true; //경사면 설치
                 }
             }
