@@ -247,7 +247,6 @@ public class Main {
                         doors[nx][ny] = true;
                     }
                 }
-
             }
         }
         return cnt;
