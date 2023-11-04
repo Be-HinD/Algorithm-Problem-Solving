@@ -5,7 +5,7 @@ import java.util.*;
 
 //BOJ_1799 비숍
 public class Main {
-    static int N, wCnt, bCnt, res;
+    static int N, wCnt, bCnt;
     static int[] dx = new int[]{-1, -1, 1, 1}; //대각선 방향벡터
     static int[] dy= new int[]{-1, 1, -1, 1};
     static int[][] map;
@@ -25,9 +25,12 @@ public class Main {
             }
         }
 
-        //1은 비숍이 놓일 수 없는 곳.
-        //0이 있는 위치들에 대해서 비숍을 넣을 수 있는지 검증하면서 놓아야함.
-        //dfs를 통해 0,0부터 시작해서 놓을수있으면 놓고, 안놓는 경우도 체크하면서 최대값 산출
+        //체스판 위에서 비숍이 움직일 수 있는 범위는 대각선
+        //0,0 ~ N,N까지 놓고, 안놓고의 분기로 가지치기를 전부하면 4% 시간초과 발생
+        //방문배열로 메모이제이션 시 128mb 메모리 초과 발생
+        //분할정복 느낌의 아이디어가 조금 필요함.
+        //홀수좌표와 짝수좌표의 비숍은 서로 만나지 못함.
+        //두 가지의 경우에 대해 두 번의 DFS를 통해 최대값을 찾고 더한 결과를 출력함으로써 풀이.
 
 
         bDfs(0,0, 0);
@@ -37,7 +40,7 @@ public class Main {
 
     private static void bDfs(int x, int y, int cnt) {
         if(x>=N) {
-            //행렬을 다 돌았을 경우
+            //탐색이 끝났을 경우 비교
             wCnt = Math.max(wCnt, cnt);
             return;
         }
@@ -47,6 +50,7 @@ public class Main {
                 //놓을 수 있는 위치라면 놓고 재귀
                 map[x][y] = 2;
                 if ((y+2) >= N) {
+                    //행이 바뀌어야 하고, 행의 홀수 짝수에 따라 시작 y좌표가 변경
                     if(x % 2 == 0) bDfs(x + 1, 1, cnt + 1);
                     else bDfs(x + 1, 0, cnt + 1);
                 }
@@ -54,14 +58,13 @@ public class Main {
 
                 map[x][y] = 1; //백트래킹
         }
+
+        //해당 자리에 놓지 않는 경우
         if((y+2) >= N) {
             if(x % 2 == 0) bDfs(x + 1, 1, cnt);
             else bDfs(x + 1, 0, cnt);
         }
         else bDfs(x,y+2,cnt);
-
-        //해당 자리에 놓았을 때
-        //해당 자리에 놓지 않았을 때
     }
 
     private static void wDfs(int x, int y, int cnt) {
@@ -76,21 +79,20 @@ public class Main {
             //놓을 수 있는 위치라면 놓고 재귀
             map[x][y] = 2;
             if ((y+2) >= N) {
+                //행이 바뀌어야 하고, 행의 홀수 짝수에 따라 시작 y좌표가 변경
                 if(x % 2 == 0) wDfs(x + 1, 0, cnt + 1);
                 else wDfs(x + 1, 1, cnt + 1);
             }
             else wDfs(x, y + 2, cnt + 1);
-
             map[x][y] = 1; //백트래킹
         }
+
+        //해당 자리에 놓지 않는 경우
         if((y+2) >= N) {
             if(x % 2 == 0) wDfs(x + 1, 0, cnt);
             else wDfs(x + 1, 1, cnt);
         }
         else wDfs(x,y+2,cnt);
-
-        //해당 자리에 놓았을 때
-        //해당 자리에 놓지 않았을 때
     }
 
     private static boolean isValidate(int x, int y) {
