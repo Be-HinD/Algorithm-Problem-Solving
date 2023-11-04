@@ -1,8 +1,8 @@
 import java.util.*;
 class Solution {
     public int[] solution(int[] array, int[][] commands) {
-        int[] answer;
-        List<Integer> list = new ArrayList<>();
+        int[] answer = new int[commands.length];
+        int pointer = 0;
         
         for(int i=0; i<commands.length; i++) {
             int leng = (commands[i][1]-commands[i][0])+1;
@@ -14,14 +14,9 @@ class Solution {
             Arrays.sort(arr);
             
             int searchNum = commands[i][2] - 1;
-            list.add(arr[searchNum]);
+            answer[pointer++] = arr[searchNum];
         }
         
-        answer = new int[list.size()];
-        int p = 0;
-        for(int idx : list) {
-            answer[p++] = idx;
-        }
         return answer;
     }
 }
