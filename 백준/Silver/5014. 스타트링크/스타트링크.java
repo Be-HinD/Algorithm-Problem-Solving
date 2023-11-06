@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 //BOJ_5014 스타트링크
+//PQ대신 QUEUE 사용한 풀이.
 public class Main {
     static int F, S, G, U, D;
     public static void main(String[] args) throws IOException {
@@ -24,23 +25,16 @@ public class Main {
     }
 
     private static int bfs() {
-        PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return o1[1] - o2[1];
-            }
-        });
+        Queue<int[]> q = new ArrayDeque<>();
 
-//        boolean[] v = new boolean[F+1];
-        pq.offer(new int[]{S,0}); //현재 위치, 움직인 횟수
+        q.offer(new int[]{S,0}); //현재 위치, 움직인 횟수
         int[] dist = new int[F+1]; //거리 배열 사용..
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[S] = 0;
-        dist[0] = 0; //0층을 방문처리 해줘야하는 이유?? 안하면 81% 틀림.
-//        v[S] = true;
+        dist[0] = 0; //0층을 방문처리 해줘야하는 이유?? 안하면 81% 틀림. => 이 부분 0층은 없는데 0층 찍고 더 빨리 가는길이 생길 수 있음 ㅋㅋ.
 
-        while(!pq.isEmpty()) {
-            int[] cur = pq.poll();
+        while(!q.isEmpty()) {
+            int[] cur = q.poll();
             //도착한 경우
             if(cur[0] == G) {
                 return cur[1];
@@ -49,29 +43,16 @@ public class Main {
             int down = cur[0] - D;
             //범위를 초과하지 않고, 거리배열에 있는 값보다 낮을 시 방문
             if(down >= 0 && dist[down] > cur[1]) {
-                pq.offer(new int[]{down,cur[1] + 1});
+                q.offer(new int[]{down,cur[1] + 1});
                 dist[down] = cur[1];
             }
 
             int up = cur[0] + U;
             //범위를 초과하지 않고, 거리배열에 있는 값보다 낮을 시 방문
             if(up <=F && dist[up] > cur[1]) {
-                pq.offer(new int[]{up, cur[1] + 1});
+                q.offer(new int[]{up, cur[1] + 1});
                 dist[up] = cur[1];
             }
-//            //내려가는 경우
-//            int down = cur[0] - D;
-//            if(down < 0 || v[down]) continue;
-//            pq.offer(new int[]{down,cur[1] + 1});
-//            v[down]  =true;
-//
-//
-//            //올라가는 경우
-//            int up = cur[0] + U;
-//            if(up > F || v[up]) continue;
-//            pq.offer(new int[]{up, cur[1] + 1});
-//            v[up] = true;
-
         }
         return -1;
     }
