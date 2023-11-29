@@ -22,46 +22,44 @@ public class Main {
             E = Integer.parseInt(st.nextToken());
             flag = true;
             list = new ArrayList<>();
-            for(int i=0; i<V; i++) list.add(new ArrayList<>());
+            for(int i=0; i<V; i++) list.add(new ArrayList<>()); //인접 리스트 초기화
 
             for(int i=0; i<E; i++) {
                 st = new StringTokenizer(br.readLine());
                 int x = Integer.parseInt(st.nextToken()) - 1;
                 int y = Integer.parseInt(st.nextToken()) - 1;
                 list.get(x).add(y);
-                list.get(y).add(x);
+                list.get(y).add(x); //양방향 그래프
             }
 
             v = new int[V];
-            Arrays.fill(v, Integer.MAX_VALUE);
 
             for(int i=0; i<V; i++) {
-                if(v[i] == Integer.MAX_VALUE) bfs(i);
+                if(v[i] == 0) bfs(i);
                 if(!flag) break;
             }
 
-            if(flag) System.out.println("YES");
-            else System.out.println("NO");
+            System.out.println(flag?"YES":"NO");
         }
-
     }
 
     private static void bfs(int x) {
         Queue<Integer> q = new ArrayDeque<>();
         q.offer(x);
-        int start = 1;
-        v[x] = start;
+        int color = 1; //1은 빨강, -1은 파랑으로 구분
+        v[x] = color; //시작정점 구분
 
         while(!q.isEmpty()) {
             int cur = q.poll();
-            start = (v[cur] + 1) % 2; //for문안에서 계속 바뀌면 안되는 값.
-            for(int now : list.get(cur)) {
-                if(v[now] == Integer.MAX_VALUE) { //방문하지않은 정점
-                    v[now] = start;
+            color = v[cur] * -1; //현재 정점의 반대 색
+
+            for(int now : list.get(cur)) { //인접한 정점들에 대해서
+                if(v[now] == 0) { //방문하지않은 정점
+                    v[now] = color;
                     q.offer(now);
                     continue;
                 }
-                if(v[now] == (start+1) % 2)  { //이미 방문한 정점
+                if(v[now] == v[cur])  { //이미 방문한 정점의 색이 현재정점의 색과 같다면 이분 그래프가 아님
                     flag = false;
                     return;
                 }
