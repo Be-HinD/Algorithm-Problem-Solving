@@ -60,22 +60,22 @@ public class Main {
         }
 
         for(int i=1; i<=P; i++) {
-            System.out.print(res[i] + " ");
+            System.out.print(res[i] + " "); //결과값 출력
         }
     }
 
     private static void bfs(int player) {
         Queue<int[]> q = new ArrayDeque<>();
-//        boolean[][] v = new boolean[N][M];
+        
         for(int[] idx : casttleList.get(player)) {
             q.offer(idx);
-//            v[idx[0]][idx[1]] = true;
         }
         casttleList.get(player).clear(); //다음 턴에서 큐에 추가할 좌표를 최소화(하지않을 경우 70% 시간초과 발생)
 
         while(!q.isEmpty()) {
             int[] idx = q.poll();
             if(idx[2] == dist[player]) {
+                //다음 턴에 진행되어야 할 좌표들을 추가
                 casttleList.get(player).add(new int[]{idx[0],idx[1],0});
                 continue;
             }
@@ -85,8 +85,7 @@ public class Main {
                 int ny = idx[1] + dy[i];
                 if(nx<0 || ny<0 || nx>=N || ny>=M) continue;
                 if(map[nx][ny] == '.') { //확장 가능할 경우에만
-//                    v[nx][ny] = true;
-                    map[nx][ny] = '#';
+                    map[nx][ny] = '#'; //방문체크
                     q.offer(new int[]{nx,ny, idx[2]+1});
                     res[player]++;
                 }
