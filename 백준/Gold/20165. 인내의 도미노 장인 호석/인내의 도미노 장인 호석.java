@@ -54,7 +54,7 @@ public class Main {
             }
             sb.append("\n");
         }
-        
+
         System.out.println(sb);
 
     }
@@ -84,7 +84,7 @@ public class Main {
         while(!q.isEmpty()) {
             int[] idx = q.poll();
 
-            if(idx[2] == 0) continue;
+            if(map[idx[0]][idx[1]] == 0) continue; //현재 상태값을 기준으로!..
 
             map[idx[0]][idx[1]] = 0; //현재좌표 넘어뜨리고 이후 연쇄 작용 큐에 추가
             res++; //결과값 증가
@@ -95,7 +95,7 @@ public class Main {
                 nx += dx[d];
                 ny += dy[d];
                 if(nx<0 || ny<0 || nx>=N || ny>=M) continue;
-                if(map[nx][ny] != 0) {
+                if(map[nx][ny] != 0) { //넘어지지 않은 도미노의 경우에만
                     q.offer(new int[]{nx,ny,map[nx][ny]});
                 }
             }
