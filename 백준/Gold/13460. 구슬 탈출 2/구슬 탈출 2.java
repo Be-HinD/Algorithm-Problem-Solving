@@ -3,13 +3,30 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-//BOJ_13459 구슬 탈출
+//BOJ_13460 구슬 탈출 2
 public class Main {
-    static int N, M, point, res;
-    static char[][][] map;
+    static class BALL { //각 게임 결과에 대한 정보를 담는 클래스
+        int rx;
+        int ry;
+        int bx;
+        int by;
+        int count;
+
+        public BALL(int rx, int ry, int bx, int by, int count) {
+            this.rx = rx;
+            this.ry = ry;
+            this.bx = bx;
+            this.by = by;
+            this.count = count;
+        }
+        public BALL() {}
+    }
+    static int N, M, res;
+    static BALL start = new BALL();
+    static char[][] map;
     static int[] dx = new int[]{1,-1,0,0};
     static int[] dy = new int[]{0,0,-1,1};
-    static int[] hole = new int[2];
+    static boolean[][][][] v = new boolean[10][10][10][10];
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -17,90 +34,98 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-
-        map = new char[1000000][N][M];
+        map = new char[N][M];
         for(int i=0; i<N; i++) {
             String input = br.readLine();
             for(int j=0; j<M; j++) {
                 char idx = input.charAt(j);
-                map[0][i][j] = idx;
-                if(idx == 'O') {
-                    hole[0] = i;
-                    hole[1] = j;
+                map[i][j] = idx;
+                if(idx == 'R') {
+                    start.rx = i;
+                    start.ry = j;
+                }
+                else if(idx == 'B') {
+                    start.bx = i;
+                    start.by = j;
                 }
             }
         }
 
-        //상하좌우로 기울일 수 있고,
-        //기울였다는 가정하에 해당방향으로 구슬이 이동
-        //이동이 끝나는게 기울이는 동작이 끝났다는 것.
-        point = 1;
+        start.count = 0; //초기화
+        res = -1; //초기화
 
-        if(bfs()) System.out.println(res);
+        bfs();
+        if(res != -1) System.out.println(res);
         else System.out.println(-1);
 
     }
 
-    private static boolean bfs() {
-        Queue<int[]> q = new ArrayDeque<>();
-        q.offer(new int[]{0,0,-1}); //게임 횟수, 맵 인덱스, 어느방향으로 밀었는지
+    private static void bfs() {
+        Queue<BALL> q = new ArrayDeque<>();
+        q.offer(start); //시작지점 큐에 추가
+        v[start.rx][start.ry][start.bx][start.by] = true;
 
         while(!q.isEmpty()) {
-            int[] cur = q.poll();
+            BALL ball = q.poll();
 
-            if(cur[0] == 10) continue; //종료조건
+            if(ball.count > 10) break; //게임횟수가 10번 이상되면 종료.
+            if(map[ball.rx][ball.ry] == 'O' && map[ball.bx][ball.by] != 'O') { //빨간 공만 구멍에 넣을 경우
+                res = ball.count;
+                break;
+            }
 
-            //해당 게임횟수 및 맵에 관해 총 4번(상하좌우)의 게임 로직을 수행하고, 결과를 서로다른 인덱스에 저장 및 큐에 추가.
-            for(int d=0; d<4; d++) {
-                if(cur[2] == d) continue;
-                boolean redFlag = false;
-                boolean blueFlag = false;
-                for (int i = 0; i < N; i++) {
-                    map[point][i] = map[cur[1]][i].clone();
+            for(int i=0; i<4; i++) { //현 좌표에 대해 4방향 탐색
+                int nextRx = ball.rx;
+                int nextRy = ball.ry;
+                int nextBx = ball.bx;
+                int nextBy = ball.by;
+
+                while(true) { //빨간 공에 대한 시뮬레이션
+                    if (map[nextRx][nextRy] != '#' && map[nextRx][nextRy] != 'O') { //진행 가능한 경우(즉. 다음지점이 . 이거나 다른 공이 있을 경우에만)
+                        nextRx += dx[i];
+                        nextRy += dy[i];
+                    } else { //진행 불가능한 경우
+                        if (map[nextRx][nextRy] == '#') { //벽이라면 이전 칸으로 대치
+                            nextRx -= dx[i];
+                            nextRy -= dy[i];
+                        }
+                        break;
+                    }
                 }
-                Queue<int[]> ball = new ArrayDeque<>();
-                for (int i = 0; i < N; i++) { //큐에 공 담는 과정
-                    for (int j = 0; j < M; j++) {
-                        if (map[cur[1]][i][j] == 'R') ball.offer(new int[]{i,j,1});
-                        else if (map[cur[1]][i][j] == 'B') ball.offer(new int[]{i,j,2});
+                while(true) { //파란 공에 대한 시뮬레이션
+                    if (map[nextBx][nextBy] != '#' && map[nextBx][nextBy] != 'O') { //진행 가능한 경우
+                        nextBx += dx[i];
+                        nextBy += dy[i];
+                    } else { //진행 불가능한 경우
+                        if (map[nextBx][nextBy] == '#') { //벽이라면 이전 칸으로 대치
+                            nextBx -= dx[i];
+                            nextBy -= dy[i];
+                        }
+                        break;
                     }
                 }
 
-                while(!ball.isEmpty()) {
-                    int[] curBall = ball.poll();
-
-                    int nx = curBall[0] + dx[d];
-                    int ny = curBall[1] + dy[d];
-                    if(nx<0 || ny<0 || nx>=N || ny>=M) continue;
-
-                    if(map[point][nx][ny] == '.') { //이동 가능
-                        ball.offer(new int[]{nx,ny,curBall[2]});
-                        map[point][nx][ny] = map[point][curBall[0]][curBall[1]];
-                        map[point][curBall[0]][curBall[1]] = '.'; //기존자리 비우기
-                    }
-                    else if(map[point][nx][ny] == 'B' || map[point][nx][ny] == 'R') {
-                        nx += dx[d];
-                        ny += dy[d];
-                        if(nx<0 || ny<0 || nx>=N || ny>=M) continue;
-                        if(map[point][nx][ny] == '.' || map[point][nx][ny] == 'O') { //빈자리일 때만 추가하면 87% 틀렸습니다. 그 다음자리가 hole일 경우에도 추가해줘야함!.. 두개가 같이 빠질 수 있도록.
-                            ball.offer(new int[]{curBall[0],curBall[1],curBall[2]}); //기존자리 한번 더 추가
+                if(nextRx == nextBx && nextRy == nextBy) { //구해진 두 개의 공의 좌표가 겹칠 경우
+                    if(map[nextRx][nextRy] != 'O') { //빨간공이 목표지점일 경우에는
+                        int redDist = Math.abs(nextRx - ball.rx) + Math.abs(nextRy - ball.ry);
+                        int blueDist = Math.abs(nextBx - ball.bx) + Math.abs(nextBy - ball.by);
+                        if(redDist > blueDist) { //파란공이 앞에 있어야 할 경우
+                            nextRx -= dx[i];
+                            nextRy -= dy[i];
+                        }
+                        else {
+                            nextBx -= dx[i];
+                            nextBy -= dy[i];
                         }
                     }
-                    else if(map[point][nx][ny] == 'O') {
-                        if(curBall[2] == 1) redFlag = true;
-                        else blueFlag = true;
-                        map[point][curBall[0]][curBall[1]] = '.'; //기존자리 비우기
-                    }
                 }
-                if(redFlag && !blueFlag) {
-                    res = cur[0] + 1;
-                    return true;
-                }
-                else if(!redFlag && !blueFlag) { //두 개의 공이 들어가지 않을 경우에만 탐색 진행.
-                    q.offer(new int[]{cur[0] + 1, point++, d});
+                //만약 결과좌표가 탐색했었던 좌표라면 큐에 추가하지 않음.
+                if(!v[nextRx][nextRy][nextBx][nextBy]) {
+                    v[nextRx][nextRy][nextBx][nextBy] = true;
+                    BALL b = new BALL(nextRx, nextRy, nextBx, nextBy, ball.count+1);
+                    q.offer(b);
                 }
             }
         }
-        return false;
     }
 }
