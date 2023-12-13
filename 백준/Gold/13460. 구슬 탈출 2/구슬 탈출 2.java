@@ -48,6 +48,9 @@ public class Main {
                     start.bx = i;
                     start.by = j;
                 }
+                else if(idx == 'O') {
+                    v[i][j][i][j] = true;
+                }
             }
         }
 
@@ -64,7 +67,7 @@ public class Main {
         Queue<BALL> q = new ArrayDeque<>();
         q.offer(start); //시작지점 큐에 추가
         v[start.rx][start.ry][start.bx][start.by] = true;
-
+        
         while(!q.isEmpty()) {
             BALL ball = q.poll();
 
