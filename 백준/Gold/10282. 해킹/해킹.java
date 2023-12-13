@@ -56,16 +56,16 @@ public class Main {
         while(!pq.isEmpty()) {
             int[] cur = pq.poll();
 
-//            if(dist[cur[0]] < cur[1]) continue;
+            if(dist[cur[0]] < cur[1]) continue;
+            
             for(int[] idx : list.get(cur[0])) { //cur[0]번 정점과 인접해있는 모든 정점들에 대해서
-//                System.out.println(cur[0] + " -> " + idx[0] + " : " + idx[1]);
                 if(dist[idx[0]] > cur[1] + idx[1]) { //idx정점으로 갈 때 시간이 더 적게 걸리는 경우에 대해서만
                     pq.offer(new int[]{idx[0], cur[1] + idx[1]});
                     dist[idx[0]] = cur[1] + idx[1]; //최단 감염시간 갱신
                 }
             }
         }
-//        System.out.println(Arrays.toString(dist));
+        
         int cnt = 0; //감염된 컴퓨터 개수
         for(int i=1; i<dist.length; i++) {
             if(dist[i] != Integer.MAX_VALUE) {
