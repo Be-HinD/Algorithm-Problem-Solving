@@ -1,48 +1,61 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 
+//BOJ_9251 LCS
 public class Main {
+    static String a, b;
+    static char[] arr1, arr2;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+        a = br.readLine();
+        arr1 = new char[a.length()+1];
+        for(int i=0; i<a.length(); i++) {
+            arr1[i+1] = a.charAt(i);
+        }
+        b = br.readLine();
+        arr2 = new char[b.length()+1];
+        for(int i=0; i<b.length(); i++) {
+            arr2[i+1] = b.charAt(i);
+        }
+        int[][] dp = new int[a.length()+1][b.length()+1];
+        for(int i=1; i<=a.length(); i++) {
+            for(int j=1; j<=b.length(); j++) {
+                if(arr1[i] == arr2[j]) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                }
+                else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            }
+        }
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+        int x = a.length();
+        int y = b.length();
+        String res = "";
+        
+        while(x != 0 && y != 0) {
+            if(dp[x-1][y] == dp[x][y]) {
+                x -= 1;
+            }
+            else if(dp[x][y-1] == dp[x][y]) {
+                y -= 1;
+            }
+            else {
+                res += arr1[x];
+                x -= 1;
+                y -= 1;
+            }
+        }
 
-		// toCharArray() : 문자열을 char[] 배열로 반환해주는 메소드
-		char[] a = sc.nextLine().toCharArray();
-		char[] b = sc.nextLine().toCharArray();
-		int[][] dp = new int[a.length + 1][b.length + 1];
-		String str = "";
+        String lcs = "";
+        for(int i=res.length()-1; i>=0; i--) {
+            lcs += res.charAt(i);
+        }
 
-		for (int i = 1; i <= a.length; i++) {
-			for (int j = 1; j <= b.length; j++) {
-				if (a[i - 1] == b[j - 1]) {
-					dp[i][j] = dp[i - 1][j - 1] + 1;
-				} else {
-					dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-				}
-			}
-		}
-		// 부분수열 구하기 시작
-		int x = a.length;
-		int y = b.length;
-
-		while (x != 0 && y != 0) {
-			if (dp[x - 1][y] == dp[x][y]) { // 왼쪽값과 같다
-				x -= 1;
-			} else if (dp[x][y - 1] == dp[x][y]) { // 윗쪽값과 같다.
-				y -= 1;
-			} else { // 왼쪽값과 윗쪽값과 같은 경우가 없다.
-                str += a[x - 1];
-				x -= 1;
-				y -= 1;
-			}
-		}
-
-		if (dp[a.length][b.length] != 0) {
-			System.out.println(dp[a.length][b.length]);
-			for (int i = str.length()-1; i >= 0 ; i--) {
-				System.out.print(str.charAt(i));
-			}
-		} else {
-			System.out.println(0);
-		}
-	}
+        System.out.println(dp[arr1.length-1][arr2.length-1]);
+        System.out.println(lcs);
+    }
 }
