@@ -31,56 +31,26 @@ public class Main {
             }
         }
 
-//        for(int i=0; i<N; i++) System.out.println(Arrays.toString(dp[i]));
-
         System.out.println(res);
     }
 
-//    private static int bfs(int r, int c) {
-//        //기저조건
-//        Queue<int[]> q = new ArrayDeque<>();
-//        q.offer(new int[]{r,c,1});
-//        int max = 1;
-//
-//        while(!q.isEmpty()) {
-//            int[] cur = q.poll();
-//
-//            max = Math.max(max, cur[2]);
-//
-//            for(int i=0; i<4; i++) {
-//                int nx = cur[0] + dx[i];
-//                int ny = cur[1] + dy[i];
-//                if(nx<0 || ny<0 || nx>=N || ny>=N) continue;
-//
-//                if(map[cur[0]][cur[1]] < map[nx][ny]) {
-//                    if(dp[nx][ny] != Integer.MAX_VALUE) {
-//                        max = Math.max(max, cur[2] + dp[nx][ny]);
-//                    }
-//                    else q.offer(new int[]{nx,ny,cur[2]+1});
-//                }
-//            }
-//        }
-//        return max;
-//    }
-
     private static int dfs(int r, int c) {
-        //기저
         //동작
         for(int i=0; i<4; i++) {
             int nx = r + dx[i];
             int ny = c + dy[i];
             if(nx<0 || ny<0 || nx>=N || ny>=N) continue;
 
-            if(map[r][c] < map[nx][ny]) {
-                if(dp[nx][ny] == 0) {
+            if(map[r][c] < map[nx][ny]) { //다음 진행방향으로 나아갈 수 있는 경우
+                if(dp[nx][ny] == 0) { //다음 진행방향이 탐색되지 않은 좌표라면
                     dp[r][c] = Math.max(dp[r][c], dfs(nx, ny)+1);
                 }
-                else {
+                else { //이미 탐색된 좌표일 경우 해당 좌표의 dp값+1
                     dp[r][c] = Math.max(dp[r][c], dp[nx][ny]+1);
                 }
             }
         }
-        if(dp[r][c] == 0) return 1;
+        if(dp[r][c] == 0) return 1; //아무곳도 갈 수 없었던 경우
         return dp[r][c];
     }
 }
