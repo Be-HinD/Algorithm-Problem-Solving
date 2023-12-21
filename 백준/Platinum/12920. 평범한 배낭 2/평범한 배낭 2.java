@@ -1,66 +1,61 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
-//BOJ_12865 평범한 배낭
+//BOJ_12920 평범한 배낭 2
 public class Main {
-    static int N, K, P;
-    static int[][] dp, item;
-
-    public static void main(String[] args) throws IOException {
+    static int N, M;
+    static int[] dp;
+    static int[][] cnt, item;
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
-        K = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken()); //물건 개수
+        int M = Integer.parseInt(st.nextToken()); //배낭 무게
 
-        item = new int[100000][2];
-        P = 1;
-        for(int i=1; i<=N; i++) {
+        item = new int[N+1][3];
+        for(int i=0; i<N; i++) {
             st = new StringTokenizer(br.readLine());
-            int w = Integer.parseInt(st.nextToken()); //무게
-            int happy = Integer.parseInt(st.nextToken()); //만족도
-            int cnt = Integer.parseInt(st.nextToken()); //가용 개수
-
-            int iter = 1;
-            while(iter <= cnt) {
-                item[P][0] = w * iter;
-                item[P][1] = happy * iter;
-                cnt -= iter;
-                iter *= 2;
-                P++;
-            }
-
-            if(cnt != 0) {
-                item[P][0] = w * cnt;
-                item[P][1] = happy * cnt;
-                P++;
-            }
+            item[i][0] = Integer.parseInt(st.nextToken());
+            item[i][1] = Integer.parseInt(st.nextToken());
+            item[i][2] = Integer.parseInt(st.nextToken());
         }
 
+        dp = new int[M+1]; //최대무게만큼 초기화
+        cnt = new int[N+1][M+1];
 
-        dp = new int[P][K+1]; //물건 종류 수, 최대무게
+        for(int i=1; i<=M; i++) { //dp배열 채우기 시작
+            
+            int max = dp[i] = dp[i-1]; //이전 값 채워놓기; //현재 i무게에 대한 최대값 초기화
+            int maxIdx = -1;
 
 
-        //일반적인 0-1 냅색
-        for(int i=1; i<P; i++) { //i는 물건의 번호라 생각
-            for(int j=1; j<=K; j++) { //j는 1부터 최대무게 K까지
-                if(item[i][0] <= j) { //현재 물건을 담을 수 있다면
-                    if(dp[i-1][j] < item[i][1] + dp[i-1][j-item[i][0]]) {
-                        dp[i][j] = item[i][1] + dp[i-1][j-item[i][0]];
+            //해당 i의 무게에서 각 물건들에 대해 최대 만족도 조사
+            for(int j=0; j<N; j++) {
+                if(i>=item[j][0]) { //해당 물건을 놓을 수 있을 때
+                    if(max<dp[i-item[j][0]]+item[j][1] && cnt[j][i-item[j][0]] < item[j][2]) { //현재 j물건을 택했을 때 만족도가 최대값이고, 아직 전부 소진되어있지 않은 상태라면
+                        max = dp[i-item[j][0]] + item[j][1]; //max값 갱신
+                        maxIdx = j;
                     }
-                    else {
-                        dp[i][j] = dp[i-1][j];
-                    }
-                }
-                else {
-                    dp[i][j] = dp[i-1][j];
                 }
             }
+
+            if(maxIdx != -1) { //이전 무게에서 보다 최대값이 갱신이 된다면
+                for(int j=0; j<N; j++) {
+                    cnt[j][i] = cnt[j][i-item[maxIdx][0]];
+                }
+                cnt[maxIdx][i]++;
+                dp[i] = max;
+            }
+            else {
+                for(int j=0; j<=N; j++) {
+                    cnt[j][i] = cnt[j][i-1];
+                }
+            }
+
         }
 
-//        for(int i=0; i<P; i++) System.out.println(Arrays.toString(dp[i]));
-        System.out.println(dp[P-1][K]); //최대가치 출력
+        System.out.println(dp[M]);
+
     }
 }
