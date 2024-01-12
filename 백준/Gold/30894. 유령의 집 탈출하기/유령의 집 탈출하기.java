@@ -35,12 +35,6 @@ public class Main {
 
         v = new boolean[4][N][M];       //3차원 방문체크 배열 (유령이 바라보는 4방향에 대해 방문체크 진행)
 
-        /*
-        * 전처리 과정
-        * 맵관리를 유령이 바라보는 4방향에 대해 3차원 배열로 관리하게 된다면
-        * 각 초마다 유령이 바라볼 수 있는 곳들에 대해 미리 방문체크를 해놓는다면
-        * BFS로직에서 O(1)의 시간으로 석준이가 해당 방향으로 갈 수 있는지 체크가 가능.
-        * */
         for(int i=0; i<4; i++) {
             for(int[] ghost : list) {
                 int dist = (ghost[2] + (i % 4)) % 4;        // 현재 초에 대한 유령의 방향
@@ -101,11 +95,6 @@ public class Main {
         if(x<0 || y<0 || x>=N || y>=M) return false;
         return true;
     }
-
-    /*
-    * 입력 : 유령의 좌표, 방향, 석준이의 좌표, 방문체크 포인터
-    * 로직 : 각 유령이 바라볼 수 있는 공간에 대해 방문체크 진행
-    * */
     private static void detactSeokjun(int x, int y, int d, int p) {
 
 
@@ -119,7 +108,6 @@ public class Main {
             else break;
             
         }
-        
-        
+
     }
 }
