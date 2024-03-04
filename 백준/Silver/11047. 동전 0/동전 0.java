@@ -19,14 +19,12 @@ public class Main {
 
         for(int i=N-1; i>=0; i--) {
             if(K >= arr[i]) {
-                int cnt = K / arr[i];
-                res += cnt;
-                K -= cnt*arr[i];
-                if(K == 0) break;
+                res += K / arr[i];
+                K %= arr[i];
             }
         }
 
         System.out.println(res);
-
+        br.close();
     }
 }
