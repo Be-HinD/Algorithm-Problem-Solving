@@ -21,6 +21,7 @@ public class Main {
         Arrays.sort(arr);
 
         int res = upperBound();
+
         System.out.println(res==-1?0:res);
     }
 
@@ -44,7 +45,7 @@ public class Main {
                 high = mid;
             }
         }
-        return low-1;
+        return high-1;
     }
 
 }
