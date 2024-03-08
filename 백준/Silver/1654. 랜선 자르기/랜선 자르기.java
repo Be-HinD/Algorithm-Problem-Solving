@@ -1,49 +1,38 @@
-import java.io.*;
-import java.util.Arrays;
-import java.util.StringTokenizer;
-
-//BOJ_16401 과자 나눠주기
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 public class Main {
-    static int N,M;
+    static int K, N, MaxLength;
     static int[] arr;
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+        K = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        arr = new int[N];
-
-        for(int i=0; i<N; i++) {
+        arr = new int[K];
+        for(int i=0; i<K; i++) {
             arr[i] = Integer.parseInt(br.readLine());
+            MaxLength = Math.max(MaxLength, arr[i]);
         }
-
-        Arrays.sort(arr);
-
-        long res = upperBound();
-
-        System.out.println(res==-1?0:res);
+        BinarySearch(MaxLength, N);
     }
-
-    public static long upperBound() {
+    private static void BinarySearch(int MaxLength, int key) {
         long low = 1;
-        long high = (long) Integer.MAX_VALUE + 1;
-
-        while (low < high) {
-            final long mid = (low + high) /2;
-
-            long cnt = 0;
-            for(int i=0; i<N; i++) {
-                if(mid <= arr[i]) {
-                    cnt += arr[i] / mid;
-                }
+        long high = MaxLength;
+        while(low <= high) {
+            final long mid = low + (high-low)/2;
+            int cnt = 0;
+            for(int idx : arr) {
+                cnt += idx / mid;
             }
-            if (cnt >= M) {
-                low = (mid + 1);
-            } else {
-                high = mid;
+            if(cnt >= key) {
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
             }
         }
-        return (high - 1);
+        System.out.println(high);
     }
-
 }
