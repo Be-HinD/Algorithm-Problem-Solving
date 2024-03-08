@@ -28,6 +28,7 @@ public class Main {
     public static int upperBound() {
         int low = 0;
         int high = 1000000055;
+        int rst = 0;
         while (low < high) {
             final int mid = (low + high) /2;
             if(mid == 0) return -1;
@@ -40,12 +41,13 @@ public class Main {
             }
 
             if (cnt >= N) {
+                rst = Math.max(rst, mid);
                 low = mid + 1;
             } else {
                 high = mid;
             }
         }
-        return high-1;
+        return rst;
     }
 
 }
