@@ -1,50 +1,51 @@
+import java.util.*;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
 
-//BOJ_11000 강의실 배정
 public class Main {
-    static int N;
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        N = Integer.parseInt(br.readLine());
-
-        int[][] arr = new int[N][2];
-        StringTokenizer st;
-        for(int i=0; i<N; i++) {
-            st = new StringTokenizer(br.readLine());
-            arr[i][0] = Integer.parseInt(st.nextToken());
-            arr[i][1] = Integer.parseInt(st.nextToken());
-        }
-
-        int res = 0;
-        //1 2 3
-        //3 4 5
-        Arrays.sort(arr, new Comparator<int[]>() {
+   static int N;
+    static Comparator<int[]> Comp;
+    static PriorityQueue<int[]> ClassList;
+    
+    public static void main(String[] args) throws IOException{
+        init();
+        solv();
+    }
+    
+    private static void init()throws IOException{
+        N = readInt();
+        Comp = new Comparator<int[]>(){
             @Override
-            public int compare(int[] o1, int[] o2) {
-                return o1[0] - o2[0];
+            public int compare(int[] x1, int[] x2){
+                return x1[0] - x2[0];   //끝시간은 후의 PQ에서 정렬할 거니까까
             }
-        });
-
-        //시작시간을 기준으로 오름차순 정렬
-        //13,35 or 24
-
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        pq.offer(arr[0][1]);
-        for(int i=1; i<N; i++) {
-            int startTime = arr[i][0];
-            int endTime = arr[i][1];
-
-            if(pq.peek() <= startTime) {
-                pq.poll();
-            }
-            pq.offer(endTime);
+        };
+        ClassList = new PriorityQueue<>(Comp);
+        while(N-- > 0){
+            ClassList.add(new int [] {readInt(), readInt()});
         }
-
-        System.out.println(pq.size());
+    }
+    
+    private static void solv() throws IOException{
+        getClassRoomCount();
+    }
+    
+    private static void getClassRoomCount(){
+        PriorityQueue<Integer> endTimeList = new PriorityQueue<>();
+        endTimeList.add(0);
+        //=> 가장 빨리 끝나는 하나의 강의실로도 커버가 안되면 뒤에 강의실도 다 안되는 거니까
+        while(!ClassList.isEmpty()){
+            int [] nextClass = ClassList.poll();    //다음 강의의
+            if(endTimeList.peek() <= nextClass[0]){ //가장 빨리 끝나는 강의 다음으로 붙일 수 있음
+                endTimeList.poll(); //해당 강의실 시간 없애기
+            }
+            endTimeList.add(nextClass[1]);//새로운 강의 끝시간 추가
+        }
+        System.out.println(endTimeList.size());
+    }
+    
+    private static int readInt()throws IOException{
+        int c, n = System.in.read() & 15;   //n은 숫자 한 자리
+        while((c = System.in.read()) > 32) n = (n<<3) + (n<<1) + (c&15);
+        return n;
     }
 }
