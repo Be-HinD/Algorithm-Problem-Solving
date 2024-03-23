@@ -12,25 +12,26 @@ public class Main {
 
         int[] arr = new int[N];
         st = new StringTokenizer(br.readLine());
-        int totalValue = 0;
         for(int i=0; i<N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
-            totalValue += arr[i];
         }
 
-        int res = Integer.MIN_VALUE;
-        if(N==M) {
-            System.out.println(totalValue);
-            return;
+        int res = Integer.MAX_VALUE;
+        int sum = 0;
+        //최초합
+        for(int i=0; i<M; i++) {
+            sum += arr[i];
         }
-        for(int i=0; i<=N-M; i++) {
-            int sum = 0;
-            for(int j=0; j<M; j++) {
-                sum += arr[i+j];
-            }
+
+        res = sum;
+
+        int l = 0;
+        int r = M;
+        while(r <= N-1) {
+            sum -= arr[l++];
+            sum += arr[r++];
             res = Math.max(res, sum);
         }
-
         System.out.println(res);
     }
 }
