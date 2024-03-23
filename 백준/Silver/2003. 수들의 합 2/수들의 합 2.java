@@ -17,20 +17,23 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
         int res = 0;
-        for(int i=0; i<N; i++) {
-            int sum = arr[i];
+
+        int l,r,sum;
+        l = r = sum = 0;
+
+        //같은 위치에서 시작
+
+        while(true) {
+            if(sum >= M) {
+                sum -= arr[l++];
+            }
+            else if(r==N) break;
+            else {  //sum < M
+                sum += arr[r++];
+            }
+
             if(sum == M) {
                 res++;
-                continue;
-            }
-            for(int j=i+1; j<N; j++) {
-                sum += arr[j];
-                if(sum == M) {
-                    res++;
-                    break;
-                }
-                else if(sum > M) break;
-
             }
         }
 
