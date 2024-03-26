@@ -24,7 +24,7 @@ public class Main {
             list.get(start).add(end);
         }
         
-        int[] res = Dijkstra(X, N);
+        int[] res = Dijkstra(X, N, K);
         Queue<Integer> q = new ArrayDeque<>();
         for(int i=0; i<res.length; i++) {
             if(res[i] == K) q.offer(i);
@@ -42,7 +42,7 @@ public class Main {
         System.out.println(sb);
     }
     
-    private static int[] Dijkstra(int start, int N) {
+    private static int[] Dijkstra(int start, int N, int K) {
         PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
@@ -58,6 +58,8 @@ public class Main {
         while(!pq.isEmpty()) {
             int[] cur = pq.poll();
 
+            if(cur[1] > K) continue;    //1500ms애서 한 줄 추가해봄.
+            
             for(int idx : list.get(cur[0])) {
                 if(v[idx] > cur[1] + 1) {
                     v[idx] = cur[1] + 1;
