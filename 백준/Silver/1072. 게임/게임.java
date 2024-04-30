@@ -1,29 +1,45 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
+//BOJ_1072 게임
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int x = sc.nextInt();
-        int y = sc.nextInt();
-        int z = getPercent(x, y);
+    static int X, Y, res;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int ans = -1;
-        int left = 0;
-        int right = (int) 1e9;
-        while (left <= right) {
-            int mid = (left + right) / 2;
+        X = Integer.parseInt(st.nextToken());
+        Y = Integer.parseInt(st.nextToken());
 
-            if (getPercent(x + mid, y + mid) != z) {
-                ans = mid;
-                right = mid - 1;
-            } else {
-                left = mid + 1;
-            }
-        }
-        System.out.println(ans);
+        /**
+         * 현재 승률을 구하고 ?
+         * 승률은 올라갈 수 밖에 없으니까 winRate가 1이라도 올라갈 수 있다면 값을 구해야함.
+         * **/
+
+        int winRate =  (int) ((long)Y * 100 / X);
+        res = -1;
+        binSearch(winRate);
+
+        System.out.println(res);
     }
 
-    static int getPercent(int x, int y) {
-        return (int) ((long) y * 100 / x);
+    private static void binSearch(int key) {
+        int low = 0;
+        int high = (int) 1e9;
+
+        while(low <= high) {
+            final int mid = (low + high) / 2;
+            //승률 계산
+            int x = X + mid;
+            int y = Y + mid;
+            int winRate = (int) ((long)y * 100 / x);
+            if(winRate != key) {
+                res = mid;
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
     }
 }
