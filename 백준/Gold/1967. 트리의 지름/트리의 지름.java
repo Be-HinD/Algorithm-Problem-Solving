@@ -6,11 +6,9 @@ public class Main {
     static class Node {
         int v;
         int w;
-        Node parent;  //부모노드에 대한 참조
         public Node(int v, int w) {
             this.v = v;
             this.w = w;
-            this.parent = null;
         }
     }
     static List<List<Node>> list;
@@ -30,7 +28,6 @@ public class Main {
          * 2. 한쪽 깊이로 탐색 (visited 체크)
          * 3. 더 이상 탐색할 수 없는 곳까지 탐색완료한 경우 res 최대값 갱신?
          * 노드 개수 10,000 간선 10,000 - 100,000,000 (1억번?)
-         * ㄱㄷㄱㄷ 부모로도 자식으로도 탐색해야하는걸?
          * 일단 내 풀이로 풀려면 부모, 자식 둘 다 탐색해야함.
          *
          * **/
@@ -47,7 +44,6 @@ public class Main {
             int weight = Integer.parseInt(st.nextToken());
             Node parentNode = new Node(parent, weight);
             Node childNode = new Node(current, weight);
-            childNode.parent = parentNode;
             parentArr[current] = parentNode;
             list.get(parent).add(childNode);    //단방향
         }
