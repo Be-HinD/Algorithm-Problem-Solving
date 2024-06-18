@@ -7,8 +7,11 @@ class Solution {
         그리디하게 풀이하려면 discount 1부터 100,000까지 want 개수만큼 반복
         100,000 * 10(일) == 1,000,000번
         **/
-        
-        for(int i=0; i<discount.length - 9; i++) {
+        int total = 0;
+        for(int i=0; i<number.length; i++) {
+            total += number[i];
+        }
+        for(int i=0; i<=discount.length - total; i++) {
             Map<String, Integer> list = new HashMap<>();
             for(int j=0; j<want.length; j++) {
                 String key = want[j];
@@ -17,7 +20,7 @@ class Solution {
             }
             
             int p = i;
-            for(int j=0; j<10; j++) {
+            for(int j=0; j<total; j++) {
                 String key = discount[p++];
                 if(list.containsKey(key)) {
                     list.put(key, list.get(key) - 1);
