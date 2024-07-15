@@ -20,10 +20,6 @@ public class Main {
             }
         }
 
-//        if (bfs(2)) {
-//            System.out.println("?");
-//        }
-
         System.out.println(binarySearch());
     }
 
@@ -34,7 +30,6 @@ public class Main {
         while(low < high) {
             final int mid = low + (high - low) / 2;
 
-//            System.out.println(low + " : " + high + " : " + mid);
             if(bfs(mid)) {
                 high = mid;
             }
@@ -79,8 +74,6 @@ public class Main {
             }
 
 
-//            System.out.println(cur[0] + " : " + cur[1] + " , " + (cur[3]-cur[2]));
-
             for(int i=0; i<4; i++) {
                 int nx = cur[0] + dx[i];
                 int ny = cur[1] + dy[i];
@@ -102,12 +95,6 @@ public class Main {
             }
         }
 
-//        for (int i = 0; i < N; i++) {
-//            System.out.println(Arrays.toString(v[i]));
-//        }
-
         return false;
     }
-
-
 }
