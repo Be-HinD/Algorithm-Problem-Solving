@@ -18,8 +18,6 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.sort(arr);
-
         int res = upperBound();
 
         System.out.println(res==-1?0:res);
