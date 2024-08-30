@@ -10,26 +10,25 @@ public class Main {
 
         N = Integer.parseInt(br.readLine());
 
-        List<int[]> list = new ArrayList<>();
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-
-        for(int i=0; i<N; i++) {
-            st = new StringTokenizer(br.readLine());
-            list.add(new int[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
-        }
-
-        Collections.sort(list, new Comparator<int[]>() {
+        PriorityQueue<int[]> list = new PriorityQueue<>(new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
                 return o1[1] - o2[1];
             }
         });
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
 
-        for(int i=0; i<list.size(); i++) {
-            pq.offer(list.get(i)[0]);
-            if(pq.size() > list.get(i)[1]) {
+        for(int i=0; i<N; i++) {
+            st = new StringTokenizer(br.readLine());
+            list.offer(new int[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
+        }
+
+        while(!list.isEmpty()) {
+            pq.offer(list.peek()[0]);
+            if(pq.size() > list.peek()[1]) {
                 pq.poll();
             }
+            list.poll();
         }
 
         while(!pq.isEmpty()) {
