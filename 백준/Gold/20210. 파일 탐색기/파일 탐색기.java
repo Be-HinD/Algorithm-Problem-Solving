@@ -1,157 +1,171 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
+//BOJ_20210 파일 탐색기
 public class Main {
-    static int N;
-    static String[] str;
-    static ArrayList<ArrayList<String>> al = new ArrayList<ArrayList<String>>();
-
-    public static void main(String[] args) throws NumberFormatException, IOException {
+    static int N, res;
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringBuilder sb;
-        N = Integer.parseInt(br.readLine());
 
-        for(int i = 0; i < N; i++) {
-            al.add(new ArrayList<>());
-        }
+        N = Integer.parseInt(br.readLine());    //문자열 개수
 
-        for(int i = 0; i < N; i++) {
-            String s = br.readLine();
+        /**
+         * 1. 숫자가 있을 경우 한 단위로 비교
+         * 2. 숫자끼리는 십진법으로 더 작은 것이 앞으로
+         * 3. 같은 값일 경우 앞 부분의 0개수가 적은 것이 앞으로
+         * **/
 
-            for(int j = 0; j < s.length(); j++) {
-                sb = new StringBuilder();
-                if('0' <= s.charAt(j) && s.charAt(j)<= '9') {
-                    while(j < s.length() && '0' <= s.charAt(j) && s.charAt(j)<= '9') {
-                        sb.append(s.charAt(j++));
+        List<String[]> list = new ArrayList<>();
+
+
+        for(int i=0; i<N; i++) {
+            String idx = br.readLine();
+            List<String> item = new ArrayList<>();
+
+            String temp = "";
+            for(int j=0; j<idx.length(); j++) {
+                char c = idx.charAt(j);
+                if(Character.isDigit(c)) {
+                    if(!temp.isEmpty()) {
+                        item.add(temp);
+                        temp = "";
                     }
-                    j--;
-                }else {
-                    sb.append(s.charAt(j));
+                    String digit = String.valueOf(c);
+                    while(++j < idx.length()) {
+                        if(!Character.isDigit(idx.charAt(j))) {
+                            j--;
+                            break;
+                        }
+                        digit += idx.charAt(j);
+                    }
+                    item.add(digit);
                 }
-                al.get(i).add(sb.toString());
+                else { //문자
+                    temp += idx.charAt(j);
+                }
             }
+            if(!temp.isEmpty()) item.add(temp);
+            list.add(item.toArray(new String[0]));
         }
 
+//        for(String[] idx : list) {
+//            System.out.println(Arrays.toString(idx));
+//        }
 
-        Collections.sort(al, new Comparator<ArrayList<String>>() {
-
+        PriorityQueue<String[]> pq = new PriorityQueue<>(new Comparator<String[]>() {
             @Override
-            public int compare(ArrayList<String> o1, ArrayList<String> o2) {
-                int len1 = o1.size();
-                int len2 = o2.size();
-                int i = 0, j = 0;
+            public int compare(String[] o1, String[] o2) {
+                int leng = Math.min(o1.length, o2.length);
 
-                for(; i < len1 && j < len2; i++, j++) {
-                    //같은 문자면 비교하지 않음
-                    if(o1.get(i).equals(o2.get(j)))
-                        continue;
+                for(int i=0; i<leng; i++) {
+                    if(!o1[i].equals(o2[i])) {
+                        //다를 경우 숫자인지 확인
+                        if(Character.isDigit(o1[i].charAt(0)) && Character.isDigit(o2[i].charAt(0))) {
+                            //숫자일 경우
+                            //0이 아닌 지점 찾기 및 0개수 저장
+                            int zeroCntO1 = 0, zeroCntO2 = 0;
+                            int startO1 = 0, startO2 = 0;
+                            for(int j=0; j<o1[i].length(); j++) {
+                                if(o1[i].charAt(j) == '0') {
+                                    startO1++;
+                                    zeroCntO1++;
+                                    continue;
+                                }
+                                break;
+                            }
 
-                    boolean numeric1 = isNum(o1.get(i));
-                    boolean numeric2 = isNum(o2.get(j));
+                            for(int j=0; j<o2[i].length(); j++) {
+                                if(o2[i].charAt(j) == '0') {
+                                    startO2++;
+                                    zeroCntO2++;
+                                    continue;
+                                }
+                                break;
+                            }
+                            //로직 체크 필요
+                            if(o1[i].length() - startO1 != o2[i].length() - startO2) {
+                                return (o1[i].length() - startO1) - (o2[i].length() - startO2);
+                            }
 
-                    //둘다 숫자
-                    if(numeric1 && numeric2) {
-                        //숫자의 0 제거
-                        String s1 = o1.get(i).replaceAll("^0+","");
-                        String s2 = o2.get(j).replaceAll("^0+","");
-
-                        //0을 제거 했으므로 길이가 긴것이 더 큰 숫자
-                        if(s1.length() > s2.length())
-                            return 1;
-                        if(s2.length() > s1.length())
-                            return -1;
-
-                        //길이가 같을 경우 한자리씩 비교하며 두 수 비교
-                        for(int a = 0, b = 0; a<s1.length() && b < s2.length(); a++, b++) {
-                            if(s1.charAt(a) > s2.charAt(b))
-                                return 1;
-                            else if (s1.charAt(a) < s2.charAt(b))
-                                return -1;
+                            while(startO1<o1[i].length() && startO2<o2[i].length()) {
+                                if(o1[i].charAt(startO1) != o2[i].charAt(startO2)) {
+                                    return Character.compare(o1[i].charAt(startO1), o2[i].charAt(startO2));
+                                }
+                                startO1++;
+                                startO2++;
+                            }
+                            return zeroCntO1 - zeroCntO2;
                         }
+                        else {
+                            //숫자 || 문자일 경우
+                            if(Character.isDigit(o1[i].charAt(0)) && !Character.isDigit(o2[i].charAt(0))) return -1;
+                            else if(!Character.isDigit(o1[i].charAt(0)) && Character.isDigit(o2[i].charAt(0))) return 1;
+                                //o1 o2가 다른 값이며, 문자일 경우
+                            else {
+                                if (o1[i].length() == o2[i].length()) {
+                                    for(int j=0; j<o1[i].length(); j++) {
+                                        int diff = Character.toLowerCase(o1[i].charAt(j)) - Character.toLowerCase(o2[i].charAt(j));
+                                        if(diff != 0) {
+                                            return diff;
+                                        }
+                                        else {
+                                            //같은 문자열 일 경우
+                                            diff = (int) o1[i].charAt(j) - (int) o2[i].charAt(j);
+                                            if(diff != 0) return Character.compare(o1[i].charAt(j), o2[i].charAt(j));
+                                        }
+                                    }
 
-                        //숫자까지 같다면 0의 갯수가 작은순
-                        return o1.get(i).length() - o2.get(j).length();
-                    }
-
-                    //둘다 문자
-                    if(!numeric1 && !numeric2) {
-                        char c1 = o1.get(i).charAt(0);
-                        char c2 = o2.get(j).charAt(0);
-
-                        boolean isUpper1 = c1 - 'a' < 0 ? true : false;
-                        boolean isUpper2 = c2 - 'a' < 0 ? true : false;
-
-                        int n1 = c1 - 'a' >= 0 ? c1 - 'a' : c1 - 'A';
-                        int n2 = c2 - 'a' >= 0 ? c2 - 'a' : c2 - 'A';
-
-                        //둘다 대문자 이거나 둘다 소문자
-                        if((isUpper1 && isUpper2) || (!isUpper1 && !isUpper2)) {
-                            return n1 - n2;
+                                }
+                                else {
+                                    int min = Math.min(o1[i].length(), o2[i].length());
+                                    for(int j=0; j<min; j++) {
+                                        int diff = Character.toLowerCase(o1[i].charAt(j)) - Character.toLowerCase(o2[i].charAt(j));
+                                        if(diff != 0) {
+                                            return diff;
+                                        }
+                                        else {
+                                            //같은 문자열 일 경우
+                                            diff = (int) o1[i].charAt(j) - (int) o2[i].charAt(j);
+                                            if(diff != 0) return Character.compare(o1[i].charAt(j), o2[i].charAt(j));
+                                        }
+                                    }
+                                    //비교 후 다 같을 경우
+                                    return o1[i].compareTo(o2[i]);
+                                }
+                            }
                         }
-                        //c1 소문자 && c2대문자
-                        if(!isUpper1 && isUpper2) {
-                            //c1,c2가 같은 문자일 경우
-                            if(n1 == n2)
-                                return 1;
-
-                            //다른 문자일 경우
-                            return n1 - n2;
-                        }
-                        //c1 대문자 && c2소문자
-                        if(isUpper1 && !isUpper2) {
-                            //c1,c2가 같은 문자일 경우
-                            if(n1 == n2)
-                                return -1;
-
-                            //다른 문자일 경우
-                            return n1 - n2;
-                        }
                     }
-
-                    //o1 문자, o2 숫자
-                    if(!numeric1 && numeric2) {
-                        return 1;
-                    }
-
-                    //o1 숫자, o2 문자
-                    if(numeric1 && !numeric2) {
-                        return -1;
-                    }
+                    //같을 경우 계속 비교
                 }
-                //같은 문자열인데 길이가 다를 경우
-                if(len1 != i) {
-                    return 1;
-                }
-                if(len2 != j) {
-                    return -1;
-                }
-
-                return 0;
+                return o1.length - o2.length;
             }
         });
 
-        sb = new StringBuilder();
-        for(int i = 0; i < al.size(); i++) {
-            StringBuilder sb2 = new StringBuilder();
-            for(String s : al.get(i)) {
-                sb2.append(s);
-            }
-            sb.append(sb2.toString()).append("\n");
+        for(String[] idx : list) {
+            pq.offer(idx);
         }
 
-        bw.write(sb.toString());
-        bw.flush();
-    }
-    static boolean isNum(String s) {
-        if('0' <= s.charAt(0) && s.charAt(0) <= '9')
-            return true;
-        return false;
+        StringBuilder sb = new StringBuilder();
+
+        while(!pq.isEmpty()) {
+            for(String idx : pq.poll()) {
+                sb.append(idx);
+            }
+            sb.append("\n");
+        }
+
+        System.out.println(sb);
     }
 }
