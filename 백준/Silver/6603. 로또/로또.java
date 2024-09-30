@@ -5,7 +5,6 @@ import java.util.*;
 public class Main {
     static int[] arr, temp;
     static StringBuilder sb;
-    static boolean[] v;
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
