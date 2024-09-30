@@ -11,9 +11,9 @@ public class Main {
         StringTokenizer st;
 
         temp = new int[6];
+        sb = new StringBuilder();
 
         while(true) {
-            sb = new StringBuilder();
             st = new StringTokenizer(br.readLine());
             int K = Integer.parseInt(st.nextToken());
 
@@ -22,8 +22,10 @@ public class Main {
             for(int i=0; i<K; i++) arr[i] = Integer.parseInt(st.nextToken());
 
             Comb(0, 0);
-            System.out.println(sb);
+            sb.append("\n");
         }
+
+        System.out.println(sb);
 
     }
 
