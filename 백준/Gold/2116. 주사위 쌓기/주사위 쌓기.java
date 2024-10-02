@@ -47,23 +47,15 @@ public class Main {
             tower[i] = new DICE(br.readLine().split(" "));
         }
 
-        boolean[] max;
-
         for(int bottom =1; bottom <=6; bottom++) {
             int temp = 0;
-            max = new boolean[7];
-            max[bottom] = true;
             int top = tower[0].sideSearch(bottom);
-            max[top] = true;
-            temp += searchMaxValue(max);
+            temp += searchMaxValue(top,bottom);
             int prevTop = top;
 
             for (int i=1; i<N; i++) {   //i번 주사위 순회
-                max = new boolean[7];
-                max[prevTop] = true;
                 top = tower[i].sideSearch(prevTop);
-                max[top] = true;
-                temp += searchMaxValue(max);
+                temp += searchMaxValue(top, prevTop);
                 prevTop = top;
             }
             res = Math.max(res, temp);
@@ -73,9 +65,9 @@ public class Main {
 
     }
 
-    private static int searchMaxValue(boolean[] v) {
+    private static int searchMaxValue(int top, int bottom) {
         for(int j=6; j>=1; j--) {
-            if(!v[j]) {
+            if(j!=top && j!=bottom) {
                 return j;
             }
         }
