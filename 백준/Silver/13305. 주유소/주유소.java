@@ -23,20 +23,20 @@ public class Main {
             store[i] = Integer.parseInt(st.nextToken());
         }
 
-        int res = 0;
+        long res = 0;
 
         for(int i=0; i<store.length-1; i++) {
             int curCost = store[i];
-            res += dist[i] * curCost;
-
+            res += (long) dist[i] * curCost;
             //현재 지점보다 저렴한지점까지 탐색
             for(int j=i+1; j<store.length-1; j++) {
                 if(j == store.length-1) break;
 
                 if(curCost <= store[j]) {
-                    res += dist[j] * curCost;
+                    res += (long) dist[j] * curCost;
                     i++;
                 }
+                else break;
             }
         }
 
