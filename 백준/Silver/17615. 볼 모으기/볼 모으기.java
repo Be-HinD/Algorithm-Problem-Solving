@@ -9,40 +9,52 @@ public class Main {
 
         N = Integer.parseInt(br.readLine());
 
-        /**
-         * 현재
-         * **/
-
-        char[] arr = new char[N];
         String ball = br.readLine();
         int R = 0, B = 0;
         for(int i=0; i<N; i++) {
-            arr[i] = ball.charAt(i);
-            if(arr[i] == 'R') R++;
+            if(ball.charAt(i) == 'R') R++;
             else B++;
         }
 
         char lastBall;
-        if(arr[N-1] == 'R') lastBall = 'R';
+        if(ball.charAt(ball.length()-1) == 'R') lastBall = 'R';
         else lastBall = 'B';
 
         int lastCnt = 1;
         for(int i=N-2; i>=0; i--) {
-            if(arr[i] != lastBall) break;
+            if(ball.charAt(i) != lastBall) break;
             else {
                 lastCnt++;
             }
         }
 
-        if(lastBall == 'R') R -= lastCnt;
-        else B -= lastCnt;
+        int tempA = R, tempB = B;
+        if(lastBall == 'R') tempA = R - lastCnt;
+        else tempB = B - lastCnt;
 
-        char moveBall;
-        if (R <= B) {
-            System.out.println(R);
-        } else {
-            System.out.println(B);
+        res = Math.min(tempA, tempB);
+
+        if(ball.charAt(0) == 'R') lastBall = 'R';
+        else lastBall = 'B';
+
+        lastCnt = 1;
+        for(int i=1; i<ball.length(); i++) {
+            if(ball.charAt(i) != lastBall) break;
+            else {
+                lastCnt++;
+            }
         }
+
+        if(lastBall == 'R') {
+            R -= lastCnt;
+            res = Math.min(res, R);
+        }
+        else {
+            B -= lastCnt;
+            res = Math.min(res, B);
+        }
+
+        System.out.println(res);
 
     }
 }
