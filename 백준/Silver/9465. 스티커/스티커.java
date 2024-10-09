@@ -10,10 +10,6 @@ public class Main {
         StringTokenizer st;
         StringBuilder sb = new StringBuilder();
 
-        /**
-         * dp가 될 수도 있는데 ->  i,j 스티커에 대해서 (i, j-2), (i+1, j-1)
-         * **/
-
         T = Integer.parseInt(br.readLine());
 
         for(int tc=0; tc<T; tc++) {
