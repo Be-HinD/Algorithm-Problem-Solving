@@ -1,0 +1,6 @@
+SELECT A.ID, (SELECT COUNT(*) FROM ECOLI_DATA WHERE PARENT_ID = A.ID) AS CHILD_COUNT
+FROM ECOLI_DATA A
+ORDER BY ID;
+
+#PARENT_ID에 개체 ID가 있는 애들은 전부 자식이 있는 경우임
+#특정 ID가 PARENT_ID에서 몇번 등장하냐 == 자식 개수
