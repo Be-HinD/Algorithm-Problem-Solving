@@ -1,40 +1,28 @@
-import java.util.*;
 class Solution {
-    class Data {
-        int value;
-        int index;
-
-        Data (int value, int index) {
-            this.value = value;
-            this.index = index;
+   public int solution(int[] stones, int k) {
+        int min = 0;
+        int max = Integer.MAX_VALUE;
+        int result = 0;
+        while(min <= max) {
+            int mid = (min + max) / 2;
+            if(check(mid, k, stones)) {
+                min = mid + 1;
+                result = mid;
+            } else {
+                max = mid - 1;
+            }
         }
+        return result;
     }
-    public int solution(int[] stones, int k) {
-        int answer = Integer.MAX_VALUE;
-        Deque<Data> dq = new ArrayDeque<>();
-
-        for (int i = 0; i < stones.length; i++) {
-            int stone = stones[i];
-
-            // 슬라이딩 윈도우의 크기가 k가 되도록 조절
-            while (!dq.isEmpty() && i - dq.peekFirst().index >= k) {
-                dq.pollFirst();
-            }
-
-            // 윈도우 내부의 최대 값을 유지
-            while (!dq.isEmpty() && stone > dq.peekLast().value) {
-                dq.pollLast();
-            }
-
-            dq.addLast(new Data(stone, i));
-
-            // 슬라이딩 윈도우의 크기가 k가 되면 최대 값을 확인하고 갱신
-            if (i >= k - 1) {
-                answer = Math.min(answer, dq.peekFirst().value);
-            }
+    
+    public boolean check(int mid, int k, int[] stones) {
+        int count = 0;
+        for(int i = 0; i < stones.length; i++) {
+            if(stones[i] < mid) { //mid보다 작으면 mid가 건널 수 없다.
+                count++;
+                if(count >= k) return false;
+            } else count = 0;
         }
-
-        if (answer == Integer.MAX_VALUE) return 0;
-        return answer;
+        return true;
     }
 }
