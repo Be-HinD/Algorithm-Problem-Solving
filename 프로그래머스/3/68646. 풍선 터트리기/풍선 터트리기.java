@@ -12,14 +12,7 @@ class Solution {
         
         if(a.length == 1) return 1; //입력 조건 처리
         
-        int[] left = new int[a.length];
         int[] right = new int[a.length];
-        
-        left[0] = a[0];
-        for(int i=1; i<a.length; i++) {
-            if(a[i] < left[i-1]) left[i] = a[i];
-            else left[i] = left[i-1];
-        }
         
         right[a.length-1] = a[a.length-1];
         for(int i=a.length-2; i>=0; i--) {
@@ -27,8 +20,10 @@ class Solution {
             else right[i] = right[i+1];
         }
         
+        int leftMin = a[0];
         for(int i=1; i<a.length-1; i++) {
-            if(left[i-1] > a[i] || right[i+1] > a[i]) answer++;
+            if(leftMin > a[i] || right[i+1] > a[i]) answer++;
+            leftMin = Math.min(leftMin, a[i]);
         }
         return answer;
     }
