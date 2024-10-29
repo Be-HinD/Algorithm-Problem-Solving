@@ -1,10 +1,10 @@
 # [level 2] 숫자 변환하기 - 154538 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/154538#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/154538?language=python3) 
 
 ### 성능 요약
 
-메모리: 80.3 MB, 시간: 30.94 ms
+메모리: 25.8 MB, 시간: 622.64 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 10월 29일 19:15:11
+2024년 10월 29일 19:22:57
 
 ### 문제 설명
 
