@@ -4,9 +4,11 @@ class Solution {
         
         int[] dp = new int[y+1];
         
+        if(x == y) return 0;
+        
         for(int i=x; i<=y; i++) {
-            if(i != x && dp[i] == 0) {
-                dp[i] = -1;
+            if(i != x && dp[i] == 0) {  //한번도 연산결과로 나온적없는 값들에 대해서
+                // dp[i] = -1;
                 continue;
             }
             
@@ -33,7 +35,7 @@ class Solution {
             
         }
         // System.out.println(Arrays.toString(dp));
-        return dp[y];
+        return dp[y] == 0 ? -1 : dp[y];
         
     }
 }
