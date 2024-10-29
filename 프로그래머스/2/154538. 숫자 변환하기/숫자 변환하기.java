@@ -1,3 +1,4 @@
+import java.util.Arrays;
 class Solution {
     public int solution(int x, int y, int n) {
         
@@ -31,7 +32,7 @@ class Solution {
             
             
         }
-        
+        // System.out.println(Arrays.toString(dp));
         return dp[y];
         
     }
