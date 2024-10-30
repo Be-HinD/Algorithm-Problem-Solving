@@ -17,19 +17,17 @@
             }
 
             st = new StringTokenizer(br.readLine());
-            List<Integer> list = new ArrayList<>();
-
+            
+            PriorityQueue<Integer> pq = new PriorityQueue<>();
             int prev = Integer.parseInt(st.nextToken());
             for(int i=0; i<N-1; i++) {
                 int idx = Integer.parseInt(st.nextToken());
-                list.add(idx-prev);
+                pq.offer(idx-prev);
                 prev = idx;
             }
 
-            Collections.sort(list);
-
             for(int i=0; i<N-K; i++) {
-                res += list.get(i);
+                res += pq.poll();
             }
 
             System.out.println(res);
