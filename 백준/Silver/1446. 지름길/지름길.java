@@ -1,81 +1,54 @@
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-//BOJ_1446 지름길
+//BOJ_2579 계단 오르기
 public class Main {
-    static class Node {
-        int v;
-        int w;
-        public Node(int v, int w) {
-            this.v = v;
-            this.w = w;
-        }
-    }
-    static int N, M;
-    static List<List<Node>> list;
+    static int N, D, res;
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());   //지름길의 개수
-        M = Integer.parseInt(st.nextToken());   //고속도로 길이
+        N = Integer.parseInt(st.nextToken());
+        D = Integer.parseInt(st.nextToken());
 
-
-        list = new ArrayList<>();
-        for(int i=0; i<=M; i++) list.add(new ArrayList<>());
+        Map<Integer, List<int[]>> map = new HashMap<>();
 
         for(int i=0; i<N; i++) {
             st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            if(start >= M) continue; 
-            int end = Integer.parseInt(st.nextToken());
-            int weight = Integer.parseInt(st.nextToken());
-            list.get(start).add(new Node(end, weight));
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
+            if(e-s <= cost || e > D) continue;
+
+            if(!map.containsKey(e)) {
+                map.put(e, new ArrayList<>());
+            }
+            map.get(e).add(new int[]{s, cost});
         }
 
+        int[] dp = new int[D+1];
+        Arrays.fill(dp, 100000);
+        dp[0] = 0;
 
-        System.out.println(Dijkstra());
+        for(int i=1; i<dp.length; i++) {
 
-
-    }
-
-    private static int Dijkstra() {
-        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
-            @Override
-            public int compare(Node o1, Node o2) {
-                return o1.w - o2.w;
-            }
-        });
-
-        int[] dist = new int[M+1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        pq.offer(new Node(0, 0));
-        dist[0] = 0;
-
-        while(!pq.isEmpty()) {
-            Node cur = pq.poll();
-            if(cur.v == M) {
-                break;
-            }
-
-            if(dist[cur.v+1] > cur.w+1) {
-                pq.offer(new Node(cur.v+1, cur.w+1));
-                dist[cur.v+1] = cur.w+1;
-            }
-
-            if(!list.get(cur.v).isEmpty()) {
-                for(Node n : list.get(cur.v)) {
-                    //현재 위치에서 지름길이 있다면
-                    int rate = cur.w + n.w;
-                    if(n.v > M) continue;
-                    if(dist[n.v] > rate) {
-                        //갱신 시점
-                        dist[n.v] = rate;
-                        pq.offer(new Node(n.v, rate));
-                    }
+            if(map.containsKey(i)) {
+                for(int[] cur : map.get(i)) {
+                    dp[i] = Math.min(dp[i], dp[cur[0]] + cur[1]);
                 }
             }
+            dp[i] = Math.min(dp[i-1] + 1, dp[i]);
+
         }
-        return dist[M];
+
+//        System.out.println(Arrays.toString(dp));
+
+        System.out.println(dp[D]);
     }
 }
