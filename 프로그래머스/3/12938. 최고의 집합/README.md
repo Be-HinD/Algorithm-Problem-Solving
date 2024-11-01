@@ -1,10 +1,10 @@
 # [level 3] 최고의 집합 - 12938 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12938#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12938) 
 
 ### 성능 요약
 
-메모리: 53.1 MB, 시간: 0.35 ms
+메모리: 52.8 MB, 시간: 0.24 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 07월 18일 13:09:59
+2024년 11월 01일 19:15:10
 
 ### 문제 설명
 
