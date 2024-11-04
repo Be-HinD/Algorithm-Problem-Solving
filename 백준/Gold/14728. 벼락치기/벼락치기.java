@@ -23,11 +23,11 @@ public class Main {
             arr[i][1] = Integer.parseInt(st.nextToken());
         }
 
-        int[][] dp = new int[10055][N+1];
+        int[][] dp = new int[T+1][N+1];
 
         //0-1 냅색
         for(int i=1; i<=N; i++) {
-            for(int j=1; j<10055; j++) {
+            for(int j=1; j<=T; j++) {
                 if(j - arr[i][0] >= 0) { //i아이템을 넣을 수 있음.
                     dp[j][i] = Math.max(dp[j][i-1], dp[j-arr[i][0]][i-1] + arr[i][1]);
                 }
