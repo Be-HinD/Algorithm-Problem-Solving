@@ -43,7 +43,7 @@ public class Main {
             int vi = idx[3]; //벽 부순 개수
 
             if(idx[0] == N-1 && idx[1] == M-1) { //기저조건
-                res = idx[2];
+                res = Math.max(res, idx[2]);
                 return;
             }
             for(int i=0; i<4; i++) {
