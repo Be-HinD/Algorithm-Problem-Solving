@@ -18,9 +18,7 @@ public class Main {
         for(int i=0; i<N; i++) {
             arr[i] = Integer.parseInt(br.readLine());
         }
-
-        Arrays.sort(arr);
-
+        
         long res = lower();
 
         System.out.println(res);
