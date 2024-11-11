@@ -6,7 +6,7 @@ import java.util.*;
 //BOJ_14889
 public class Main {
     static int N, res;
-    static int[] start, link;
+    static boolean[] v;
     static int[][] arr;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -22,10 +22,9 @@ public class Main {
             }
         }
 
-        start = new int[N/2];
-        link = new int[N/2];
-
+        v = new boolean[N];
         res = Integer.MAX_VALUE;
+
         Combination(0, 0);
 
         System.out.println(res);
@@ -41,28 +40,19 @@ public class Main {
             return;
         }
         for(int i=next; i<N; i++) {
-            start[cnt] = i;
+            v[i] = true;
             Combination(i+1, cnt+1);
+            v[i] = false;
         }
     }
 
     private static void searchDiff() {
         int startTeam = 0, linkTeam = 0;
-        Set<Integer> startSet = new HashSet<>();
-        for(int i=0; i<N/2; i++) {
-            startSet.add(start[i]);
-            for(int j=0; j<N/2; j++) {
-                if(i == j) continue;
-                startTeam += arr[start[i]][start[j]];
-            }
-        }
 
         for(int i=0; i<N; i++) {
-            if(startSet.contains(i)) continue;
             for(int j=0; j<N; j++) {
-                if(startSet.contains(j)) continue;
-                if(i == j) continue;
-                linkTeam += arr[i][j];
+                if(v[i] && v[j]) startTeam += arr[i][j];
+                if(!v[i] && !v[j]) linkTeam += arr[i][j];
             }
         }
 
