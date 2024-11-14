@@ -1,51 +1,51 @@
-    import java.io.BufferedReader;
-    import java.io.IOException;
-    import java.io.InputStreamReader;
-    import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.util.*;
 
-    //BOJ_9012 괄호
-    public class Main {
-        static int N;
+//BOJ_22115
+public class Main {
+    static int N, S, res;
+    static int[] arr;
+    static boolean[] v;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-        public static void main(String[] args) throws IOException {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    //        StringTokenizer st = new StringTokenizer(br.readLine());
-            StringBuilder sb = new StringBuilder();
+        N = Integer.parseInt(br.readLine());
 
-            N = Integer.parseInt(br.readLine());
+        while(N-- > 0) {
+            String s = br.readLine();
 
-            for(int i=0; i<N; i++) {
-                String input = br.readLine();
-                boolean flag = true;
-                Stack<Character> stack = new Stack<>();
-                for(int j=0; j<input.length(); j++) {
-                    char idx = input.charAt(j);
-
-                    if(idx == '(') {
-                        stack.push(idx);
-                    }
-
-                    else
-                    {
-                        if(stack.isEmpty()) {
-                            flag = false;
-                            break;
-                        }
-
-                        if(stack.peek() == '(') {
-                            stack.pop();
-                        }
-                    }
-                }
-
-                if(flag && stack.isEmpty()) {
-                    sb.append("YES").append("\n");
-                    continue;
-                }
-                sb.append("NO").append("\n");
+            if(isBalanced(s) && isCorrect(s)) {
+                System.out.println("YES");
             }
-
-
-            System.out.println(sb);
+            else {
+                System.out.println("NO");
+            }
         }
     }
+    private static boolean isCorrect(String s) {
+        int left = 0;
+
+        for(char idx : s.toCharArray()) {
+            if(idx == ')' && left == 0) return false;
+            if(idx == ')' && left > 0) left--;
+            if(idx == '(') left++;
+        }
+
+        return true;
+    }
+
+    private static boolean isBalanced(String s) {
+        int left = 0, right = 0;
+        for(char idx : s.toCharArray()) {
+            if(idx == '(') left++;
+            else right++;
+        }
+
+        if(left == right) return true;
+        return false;
+    }
+}
