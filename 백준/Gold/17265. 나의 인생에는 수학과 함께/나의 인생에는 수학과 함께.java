@@ -1,0 +1,80 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+//BOJ_17265
+public class Main {
+    static int N, minDist, minRes, maxRes;
+    static char[][] map;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        /**
+         * 키워드
+         *  최댓값과 최솟값
+         *  집 (1, 1)에서 학교 (N, N)까지 최단거리로 이동
+         *  오른쪽과 아래쪽으로만 이동
+         *  접근법
+         *  최단거리 == 다익스트라
+         *  임의의 최단거리 S와 동일한 모든 경로에서 최대값 최소값을 갱신
+         *  모든 경로 탐색 == DFS
+         * **/
+
+        minRes = Integer.MAX_VALUE;
+        maxRes = Integer.MIN_VALUE;
+
+        N = Integer.parseInt(br.readLine());
+        map = new char[N][N];
+        for(int i=0; i<N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for(int j=0; j<N; j++) {
+                map[i][j] = st.nextToken().charAt(0);
+            }
+        }
+
+        minDist = N*2 - 1;
+
+        dfs(0,0,'+',0, 0);
+
+        System.out.println(maxRes + " " + minRes);
+    }
+
+    static int[] dx = new int[]{1,0};
+    static int[] dy = new int[]{0,1};
+    private static void dfs(int x, int y, char prevOper, int sum, int cnt) {
+        if(cnt >= minDist) return;
+        if(map[x][y] == '0' || map[x][y] == '1' || map[x][y] == '2' || map[x][y] == '3' || map[x][y] == '4' || map[x][y] == '5') {
+            //숫자인 경우
+            if(prevOper == '+') {
+                sum += map[x][y] - '0';
+            }
+            else if(prevOper == '-') {
+                sum -= map[x][y] - '0';
+            }
+            else {
+                sum *= map[x][y] -'0';
+            }
+        }
+        else {
+            //연산자인 경우
+            prevOper = map[x][y];
+        }
+
+        if(x==N-1 && y==N-1) {
+            maxRes = Math.max(maxRes, sum);
+            minRes = Math.min(minRes, sum);
+            return;
+        }
+
+        //오른쪽, 아래
+        for(int i=0; i<2; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if(nx>=N || ny>=N) continue;
+            dfs(nx, ny, prevOper, sum, cnt+1);
+        }
+
+    }
+}
