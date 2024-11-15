@@ -39,12 +39,9 @@ public class Main {
 
         System.out.println(maxRes + " " + minRes);
     }
-
-    static int[] dx = new int[]{1,0};
-    static int[] dy = new int[]{0,1};
     private static void dfs(int x, int y, char prevOper, int sum, int cnt) {
         if(cnt >= minDist) return;  //최단거리 백트래킹
-        
+
         if((x%2==0&&y%2==0) || (x%2!=0&&y%2!=0)) {
             //숫자인 경우
             if(prevOper == '+') {
@@ -69,12 +66,8 @@ public class Main {
         }
 
         //오른쪽, 아래
-        for(int i=0; i<2; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if(nx>=N || ny>=N) continue;
-            dfs(nx, ny, prevOper, sum, cnt+1);
-        }
+        if(x+1<N) dfs(x+1, y, prevOper, sum, cnt+1);
+        if(y+1<N) dfs(x, y+1, prevOper, sum, cnt+1);
 
     }
 }
