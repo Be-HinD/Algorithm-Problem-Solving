@@ -4,7 +4,6 @@ class Solution {
         
         int[] wanho = scores[0];
         
-        // tc 11, 22는 정렬을 평가기준 내림차순하면 틀림. why?
         Arrays.sort(scores, (o1,o2) -> {
             if(o1[0] == o2[0]) return Integer.compare(o2[1], o1[1]);
             return Integer.compare(o2[0], o1[0]);
