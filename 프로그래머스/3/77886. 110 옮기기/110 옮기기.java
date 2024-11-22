@@ -2,16 +2,6 @@ import java.util.*;
 class Solution {
     public String[] solution(String[] s) {
         
-        /**
-        x를 최대한 사전 순으로
-        x에 있는 "110"을 뽑아서
-        임의의 위치에 다시 삽입
-        접근법
-        110을 뽑을 수 있는대로 전부 추출
-        남은 x에서 뽑은 110들을 삽입할 위치 탐색
-        마지막 0의 위치 뒤에 삽입
-        **/
-        
         String[] res = new String[s.length];
         int p = 0;
         for(String idx : s) {
@@ -20,9 +10,12 @@ class Solution {
         return res;
     }
     
+    // "110"추출을 제외한 나머지 로직에 대한 메서드
     private static String process(String idx) {
         String remainStr = extract110(idx);
-        int cnt110 = (idx.length() - remainStr.length()) / 3;
+        
+        int cnt110 = (idx.length() - remainStr.length()) / 3; //추출된 "110"의 개수
+        
         //삽입위치 탐색
         int zeroIdx = 0;
         for(int i=0; i<remainStr.length(); i++) {
@@ -44,27 +37,28 @@ class Solution {
         return res.toString();
     }
     
+    // "110"추출 메서드
     private static String extract110(String idx) {
-        Stack<Character> st = new Stack<>();
+        List<Character> str = new ArrayList<>();
         
         for(int i=0; i<idx.length(); i++) {
-            if(st.size() >= 2 && idx.charAt(i) == '0') {
-                char mid = st.pop();
-                char first = st.pop();
-                if(first == '1' && mid == '1' && idx.charAt(i) == '0') continue;
+            if(str.size() >= 2 && idx.charAt(i) == '0') {
+                if(str.get(str.size()-2) == '1' && str.get(str.size()-1) == '1') {
+                    str.remove(str.size()-1);
+                    str.remove(str.size()-1);
+                }
                 else {
-                    st.push(first);
-                    st.push(mid);
-                    st.push(idx.charAt(i));
+                    str.add(idx.charAt(i));
                 }
             }
             else {
-                st.push(idx.charAt(i));
+                str.add(idx.charAt(i));
             }
         }
         
+        // 효율적인 문자열 연산을 위한 StringBuilder 활용
         StringBuilder sb = new StringBuilder();
-        for(char x : st) {
+        for(char x : str) {
             sb.append(x);
         }
         
