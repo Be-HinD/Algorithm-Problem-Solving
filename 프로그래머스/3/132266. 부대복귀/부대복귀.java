@@ -19,8 +19,6 @@ class Solution {
             list.get(road[1]-1).add(road[0]-1);
         }
         
-        List<Integer> res = new ArrayList<>();
-        
         dist = new int[n];
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[destination-1] = 0;
@@ -28,19 +26,11 @@ class Solution {
         dijk(n, destination-1);
     
         
+        int[] res = new int[sources.length];
         for(int i=0; i<sources.length; i++) {
-            if(dist[sources[i]-1] == Integer.MAX_VALUE) {
-                res.add(-1);
-                continue;
-            }
-            res.add(dist[sources[i]-1]);
+            res[i] = dist[sources[i]-1] == Integer.MAX_VALUE ? -1 : dist[sources[i]-1];
         }
-        
-        int[] ress = new int[res.size()];
-        for(int i=0; i<res.size(); i++) {
-            ress[i] = res.get(i);
-        }
-        return ress;
+        return res;
     }
     
     private static void dijk(int n, int start) {
@@ -50,6 +40,7 @@ class Solution {
         while(!pq.isEmpty()) {
             int[] cur = pq.poll();
             
+            if(dist[cur[0]] < cur[1]) continue;
             
             for(int next : list.get(cur[0])) {
                 if(dist[next] > cur[1]+1) {
