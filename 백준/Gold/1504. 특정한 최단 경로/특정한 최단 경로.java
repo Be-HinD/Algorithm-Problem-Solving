@@ -77,7 +77,7 @@ public class Main {
             if(cur[0] == end) return cur[1];
 
             for(Node n : list.get(cur[0])) {
-                if(dist[n.v] > cur[1]+n.w) {
+                if(dist[n.v] >= cur[1]+n.w) {
                     pq.offer(new int[]{n.v, cur[1] + n.w});
                     dist[n.v] = cur[1]+n.w;
                 }
