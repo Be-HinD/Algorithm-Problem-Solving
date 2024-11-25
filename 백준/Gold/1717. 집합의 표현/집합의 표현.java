@@ -48,7 +48,7 @@ public class Main {
     private static void union(int a, int b) {
         int ap = findParent(a);
         int bp = findParent(b);
-        arr[bp] = ap;
+        arr[ap] = bp;
     }
 
     private static int findParent(int x) {
