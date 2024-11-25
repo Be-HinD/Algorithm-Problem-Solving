@@ -1,11 +1,13 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
-//BOJ_1717 집합의 표현
+//BOJ_17396
 public class Main {
     static int N, M;
     static int[] arr;
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
@@ -14,45 +16,37 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
 
         arr = new int[N+1];
-        for(int i=0; i<=N; i++) {
-            arr[i] = i;
-        }
-
+        for(int i=0; i<=N; i++) arr[i] = i;
 
         for(int i=0; i<M; i++) {
-            String[] input = br.readLine().split(" ");
+            st = new StringTokenizer(br.readLine());
+            int idx = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-            if(input[0].equals("0")) {
-                //합집합
-                int a = Integer.parseInt(input[1]);
-                int b = Integer.parseInt(input[2]);
-                union(a, b);
+            if(idx == 0) {
+                union(a,b);
             }
-
             else {
-                //isTrue?
-                int a = Integer.parseInt(input[1]);
-                int b = Integer.parseInt(input[2]);
-                int aParent = findParent(a);
-                int bParent = findParent(b);
-                if(aParent == bParent) {
-                    sb.append("YES").append("\n");
-                    continue;
-                }
-                sb.append("NO").append("\n");
+                int aRoot = find(a);
+                int bRoot = find(b);
+                if(aRoot == bRoot) sb.append("YES").append("\n");
+                else sb.append("NO").append("\n");
             }
         }
+
         System.out.println(sb);
+
+    }
+
+    private static int find(int x) {
+        if(x == arr[x]) return arr[x]; //부모와 현재가 같을 때
+        return arr[x] = find(arr[x]);    //부모를 찾을 때마다 최상위 부모로 항상 업데이트
     }
 
     private static void union(int a, int b) {
-        int ap = findParent(a);
-        int bp = findParent(b);
-        arr[ap] = bp;
-    }
-
-    private static int findParent(int x) {
-        if(x == arr[x]) return arr[x];
-        else return arr[x] = findParent(arr[x]);    //부모를 찾을 때마다 최상위 부모로 항상 업데이트
+        int aRoot = find(a);
+        int bRoot = find(b);
+        arr[bRoot] = aRoot ;
     }
 }
