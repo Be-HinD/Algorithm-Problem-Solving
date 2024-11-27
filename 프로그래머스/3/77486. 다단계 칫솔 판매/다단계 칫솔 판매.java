@@ -30,7 +30,6 @@ class Solution {
         }
         
         int[] ans = new int[enroll.length];
-        int p = 0;
         for(int i=0; i<enroll.length; i++) {
             ans[i] = res.get(enroll[i]);
         }
