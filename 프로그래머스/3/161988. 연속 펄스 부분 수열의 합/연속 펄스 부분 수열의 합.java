@@ -30,28 +30,49 @@ class Solution {
             }
         }
         
-        long res = -200000;
-        long[] dp = new long[n];
-        
-        dp[0] = minus[0];
-        res = Math.max(res, dp[0]);
+        //누적합 구하기
+        long[] minusSum = new long[n];
+        minusSum[0] = minus[0];
         for(int i=1; i<n; i++) {
-            dp[i] = Math.max(dp[i-1] + minus[i], minus[i]);
-            res = Math.max(res, dp[i]);
+            minusSum[i] = minus[i] + minusSum[i-1];
+            
+        }
+        
+        long[] plusSum = new long[n];
+        plusSum[0] = plus[0];
+        for(int i=1; i<n; i++) {
+            plusSum[i] = plus[i] + plusSum[i-1];
         }
         
         
-        Arrays.fill(dp, 0);
+        //누적합 최대값 구하기
+        long mMax=-200000, pMax=-200000;
+        int minusIdx=0, plusIdx=0;
         
-        dp[0] = plus[0];
-        res = Math.max(res, dp[0]);
-        for(int i=1; i<n; i++) {
-            dp[i] = Math.max(dp[i-1] + plus[i], plus[i]);
-            res = Math.max(res, dp[i]);
+        for(int i=0; i<n; i++) {
+            if(mMax < minusSum[i]) {
+                mMax = minusSum[i];
+                minusIdx = i;
+            }
+            if(pMax < plusSum[i]) {
+                pMax = plusSum[i];
+                plusIdx = i;
+            }
         }
         
+        //최대값에서
+        for(int i=plusIdx; i>=0; i--) {
+            if(plusSum[plusIdx] - plusSum[i] > pMax) {
+                pMax = plusSum[plusIdx] - plusSum[i];
+            }
+        }
         
+        for(int i=minusIdx; i>=0; i--) {
+            if(minusSum[minusIdx] - minusSum[i] > mMax) {
+                mMax = minusSum[minusIdx] - minusSum[i];
+            }
+        }
         
-        return res;
+        return Math.max(pMax, mMax);
     }
 }
