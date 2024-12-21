@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 177644 KB, 시간: 1196 ms
+메모리: 177092 KB, 시간: 1188 ms
 
 ### 분류
 
@@ -12,7 +12,7 @@
 
 ### 제출 일자
 
-2024년 9월 14일 06:09:50
+2024년 12월 21일 22:13:11
 
 ### 문제 설명
 
@@ -25,20 +25,20 @@
 <ol>
 	<li>기준점 (x, y)와 경계의 길이 d<sub>1</sub>, d<sub>2</sub>를 정한다. (d<sub>1</sub>, d<sub>2</sub> ≥ 1, 1 ≤ x < x+d<sub>1</sub>+d<sub>2</sub> ≤ N, 1 ≤ y-d<sub>1</sub> < y < y+d<sub>2</sub> ≤ N)</li>
 	<li>다음 칸은 경계선이다.
-	<ol>
-		<li>(x, y), (x+1, y-1), ..., (x+d<sub>1</sub>, y-d<sub>1</sub>)</li>
-		<li>(x, y), (x+1, y+1), ..., (x+d<sub>2</sub>, y+d<sub>2</sub>)</li>
-		<li>(x+d<sub>1</sub>, y-d<sub>1</sub>), (x+d<sub>1</sub>+1, y-d<sub>1</sub>+1), ... (x+d<sub>1</sub>+d<sub>2</sub>, y-d<sub>1</sub>+d<sub>2</sub>)</li>
-		<li>(x+d<sub>2</sub>, y+d<sub>2</sub>), (x+d<sub>2</sub>+1, y+d<sub>2</sub>-1), ..., (x+d<sub>2</sub>+d<sub>1</sub>, y+d<sub>2</sub>-d<sub>1</sub>)</li>
-	</ol>
+	<ul>
+		<li>1번 경계선: (x, y), (x+1, y-1), ..., (x+d<sub>1</sub>, y-d<sub>1</sub>)</li>
+		<li>2번 경계선: (x, y), (x+1, y+1), ..., (x+d<sub>2</sub>, y+d<sub>2</sub>)</li>
+		<li>3번 경계선: (x+d<sub>1</sub>, y-d<sub>1</sub>), (x+d<sub>1</sub>+1, y-d<sub>1</sub>+1), ... (x+d<sub>1</sub>+d<sub>2</sub>, y-d<sub>1</sub>+d<sub>2</sub>)</li>
+		<li>4번 경계선: (x+d<sub>2</sub>, y+d<sub>2</sub>), (x+d<sub>2</sub>+1, y+d<sub>2</sub>-1), ..., (x+d<sub>2</sub>+d<sub>1</sub>, y+d<sub>2</sub>-d<sub>1</sub>)</li>
+	</ul>
 	</li>
 	<li>경계선과 경계선의 안에 포함되어있는 곳은 5번 선거구이다.</li>
 	<li>5번 선거구에 포함되지 않은 구역 (r, c)의 선거구 번호는 다음 기준을 따른다.
 	<ul>
-		<li>1번 선거구: 1 ≤ r < x+d<sub>1</sub>, 1 ≤ c ≤ y</li>
-		<li>2번 선거구: 1 ≤ r ≤ x+d<sub>2</sub>, y < c ≤ N</li>
-		<li>3번 선거구: x+d<sub>1</sub> ≤ r ≤ N, 1 ≤ c < y-d<sub>1</sub>+d<sub>2</sub></li>
-		<li>4번 선거구: x+d<sub>2</sub> < r ≤ N, y-d<sub>1</sub>+d<sub>2</sub> ≤ c ≤ N</li>
+		<li>1번 선거구: 1 ≤ r < x+d<sub>1</sub>, 1 ≤ c ≤ y, 1번 경계선의 왼쪽 위</li>
+		<li>2번 선거구: 1 ≤ r ≤ x+d<sub>2</sub>, y < c ≤ N, 2번 경계선의 오른쪽 위</li>
+		<li>3번 선거구: x+d<sub>1</sub> ≤ r ≤ N, 1 ≤ c < y-d<sub>1</sub>+d<sub>2</sub>, 3번 경계선의 왼쪽 아래</li>
+		<li>4번 선거구: x+d<sub>2</sub> < r ≤ N, y-d<sub>1</sub>+d<sub>2</sub> ≤ c ≤ N, 4번 경계선의 오른쪽 아래</li>
 	</ul>
 	</li>
 </ol>
