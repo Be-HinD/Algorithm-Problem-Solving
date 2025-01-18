@@ -1,7 +1,7 @@
 import java.util.*;
 
 class Solution {
-    static class Robot {
+    static class Robot { //정의 객체
         int x1, y1, x2, y2, cnt;
         public Robot(int x1, int y1, int x2, int y2, int cnt) {
             this.x1 = x1;
@@ -15,6 +15,7 @@ class Solution {
     static int N;
     public int solution(int[][] board) {
         N = board.length;
+        
         return bfs(board);
     }
 
@@ -24,6 +25,7 @@ class Solution {
     static int bfs(int[][] map) {
         Queue<Robot> q = new ArrayDeque<>();
         boolean[][][][] visited = new boolean[N][N][N][N];
+        // (x1,y1) + (x2,y2) + (수평/수직) -> head의 위치에 따라 별도 체크가 안됨.
 
         q.offer(new Robot(0, 0, 0, 1, 0));
         visited[0][0][0][1] = true;
@@ -36,45 +38,45 @@ class Solution {
                 return cur.cnt;
             }
 
-            // 1. 이동
+            // Step 1. 사방탐색
             for (int i = 0; i < 4; i++) {
                 int nx1 = cur.x1 + dx[i];
                 int ny1 = cur.y1 + dy[i];
                 int nx2 = cur.x2 + dx[i];
                 int ny2 = cur.y2 + dy[i];
 
-                if (isValid(nx1, ny1, nx2, ny2, map) && !visited[nx1][ny1][nx2][ny2]) {
-                    visited[nx1][ny1][nx2][ny2] = true;
-                    q.offer(new Robot(nx1, ny1, nx2, ny2, cur.cnt + 1));
-                }
+                if (isValid(nx1, ny1, nx2, ny2, map) || visited[nx1][ny1][nx2][ny2]) continue;
+                visited[nx1][ny1][nx2][ny2] = true;
+                q.offer(new Robot(nx1, ny1, nx2, ny2, cur.cnt + 1));
+                
             }
 
-            // 2. 회전
+            // Step 2. 회전
             if (cur.x1 == cur.x2) { // 수평
-                for (int d = -1; d <= 1; d += 2) {
-                    if (isValid(cur.x1 + d, cur.y1, cur.x2 + d, cur.y2, map)) {
-                        if (!visited[cur.x1][cur.y1][cur.x1 + d][cur.y1]) {
-                            visited[cur.x1][cur.y1][cur.x1 + d][cur.y1] = true;
-                            q.offer(new Robot(cur.x1, cur.y1, cur.x1 + d, cur.y1, cur.cnt + 1));
-                        }
-                        if (!visited[cur.x2][cur.y2][cur.x2 + d][cur.y2]) {
-                            visited[cur.x2][cur.y2][cur.x2 + d][cur.y2] = true;
-                            q.offer(new Robot(cur.x2, cur.y2, cur.x2 + d, cur.y2, cur.cnt + 1));
-                        }
-                    }
+                for (int d = -1; d <= 1; d += 2) { //-1, 1
+                    if (isValid(cur.x1 + d, cur.y1, cur.x2 + d, cur.y2, map)) continue;
+                    if (visited[cur.x1][cur.y1][cur.x1 + d][cur.y1]) continue; //head 고정
+                    
+                    visited[cur.x1][cur.y1][cur.x1 + d][cur.y1] = true;
+                    q.offer(new Robot(cur.x1, cur.y1, cur.x1 + d, cur.y1, cur.cnt + 1));
+                    
+                    if (visited[cur.x2][cur.y2][cur.x2 + d][cur.y2]) continue; //tail 고정
+                    
+                    visited[cur.x2][cur.y2][cur.x2 + d][cur.y2] = true;
+                    q.offer(new Robot(cur.x2, cur.y2, cur.x2 + d, cur.y2, cur.cnt + 1));
                 }
             } else { // 수직
                 for (int d = -1; d <= 1; d += 2) {
-                    if (isValid(cur.x1, cur.y1 + d, cur.x2, cur.y2 + d, map)) {
-                        if (!visited[cur.x1][cur.y1][cur.x1][cur.y1 + d]) {
-                            visited[cur.x1][cur.y1][cur.x1][cur.y1 + d] = true;
-                            q.offer(new Robot(cur.x1, cur.y1, cur.x1, cur.y1 + d, cur.cnt + 1));
-                        }
-                        if (!visited[cur.x2][cur.y2][cur.x2][cur.y2 + d]) {
-                            visited[cur.x2][cur.y2][cur.x2][cur.y2 + d] = true;
-                            q.offer(new Robot(cur.x2, cur.y2, cur.x2, cur.y2 + d, cur.cnt + 1));
-                        }
-                    }
+                    if (isValid(cur.x1, cur.y1 + d, cur.x2, cur.y2 + d, map)) continue;
+                    if (visited[cur.x1][cur.y1][cur.x1][cur.y1 + d]) continue;
+                    
+                    visited[cur.x1][cur.y1][cur.x1][cur.y1 + d] = true;
+                    q.offer(new Robot(cur.x1, cur.y1, cur.x1, cur.y1 + d, cur.cnt + 1));
+                    
+                    if (visited[cur.x2][cur.y2][cur.x2][cur.y2 + d]) continue;
+                    
+                    visited[cur.x2][cur.y2][cur.x2][cur.y2 + d] = true;
+                    q.offer(new Robot(cur.x2, cur.y2, cur.x2, cur.y2 + d, cur.cnt + 1));
                 }
             }
         }
@@ -83,7 +85,6 @@ class Solution {
     }
 
     static boolean isValid(int x1, int y1, int x2, int y2, int[][] map) {
-        return x1 >= 0 && y1 >= 0 && x2 >= 0 && y2 >= 0 && x1 < N && y1 < N && x2 < N && y2 < N
-                && map[x1][y1] == 0 && map[x2][y2] == 0;
+        return x1<0 || y1<0 || x2<0 || y2<0 || x1>=N || y1>=N || x2>=N || y2>=N || map[x1][y1] == 1 || map[x2][y2] == 1;
     }
 }
