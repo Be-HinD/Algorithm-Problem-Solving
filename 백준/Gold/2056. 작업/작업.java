@@ -15,7 +15,7 @@ public class Main {
          * **/
 
         N = Integer.parseInt(br.readLine());
-        int[] dp = new int[N+1];
+        int[] dp = new int[N+1]; //dp[i]는 i번째 작업이 최종적으로 수행된 시간을 기록
 
         int res = 0;
 
@@ -29,10 +29,10 @@ public class Main {
             for(int j=0; j<M; j++) {
                 int next = Integer.parseInt(st.nextToken());
 
-                dp[i] = Math.max(dp[i], dp[next] + time);
+                dp[i] = Math.max(dp[i], dp[next] + time); //제일 늦게 끝난 선행 노드를 기점으로 계산
             }
 
-            res = Math.max(res, dp[i]);
+            res = Math.max(res, dp[i]); //N번 노드와 앞선 노드 전부와 연관이 없으므로 매번 갱신
         }
 
         System.out.println(res);
