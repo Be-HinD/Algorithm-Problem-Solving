@@ -13,6 +13,11 @@ public class Main {
         N = Integer.parseInt(st.nextToken());   // 뉴런의 개수
         M = Integer.parseInt(st.nextToken());   // 시냅스의 개수
 
+        /**
+         * 연결되지 않은 두 뉴런을 연결하거나 이미 연결된 두 뉴런의 연결을 끊는다. -> 싸이클이 발생할 수 있다는 걸 암시...
+         * 트리의 형태로 만들어야 한다. << 싸이클이 없고, 루트 노드는 1개만(나머지 노드들은 루트를 가리키고 있어야 함.)
+         * **/
+
         parent = new int[N + 1];
         for (int i = 1; i <= N; i++) parent[i] = i;
 
@@ -21,7 +26,7 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
-            
+
             if (find(u) == find(v)) {
                 // 이미 같은 집합에 속해 있다면 사이클이 발생한 간선
                 redundantEdges++;
@@ -29,6 +34,8 @@ public class Main {
                 union(u, v);
             }
         }
+
+        // 두 정점이 같은 루트를 가리키고 있는데 연결하려면 싸이클이 발생할 수 있다.
 
         // 연결 요소의 개수를 계산
         Set<Integer> set = new HashSet<>();
