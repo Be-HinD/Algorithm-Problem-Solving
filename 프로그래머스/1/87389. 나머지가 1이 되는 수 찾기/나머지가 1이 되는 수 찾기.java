@@ -1,13 +1,8 @@
 class Solution {
     public int solution(int n) {
-        int answer = 0;
+        int answer = 1;
         
-        for(int i=1; i<=n+1; i++) {
-            if(n % i == 1) {
-                answer = i;
-                break;
-            } 
-        }
+        while(n % answer != 1) answer++;
         return answer;
     }
 }
