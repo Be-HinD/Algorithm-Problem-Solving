@@ -56,6 +56,7 @@ public class Main {
         while(!pq.isEmpty()) {
             Node cur = pq.poll();
 
+            if(dist[cur.v] < cur.w) continue;
             if(cur.v == end) return cur.w;
 
             for(Node next : list.get(cur.v)) {
