@@ -7,6 +7,6 @@ class Solution {
             temp /= 10;
         }
         
-        return x % sum == 0 ? true : false;
+        return x % sum == 0;
     }
 }
