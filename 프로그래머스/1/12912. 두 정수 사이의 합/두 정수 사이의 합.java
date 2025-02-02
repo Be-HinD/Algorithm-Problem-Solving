@@ -1,18 +1,6 @@
 class Solution {
     public long solution(int a, int b) {
-        long answer = 0;
-        
-        if(a == b) return a;
-        else if(a < b) {
-            for(int i=a; i<=b; i++) {
-                answer += i;
-            }
-        }
-        else {
-            for(int i=b; i<=a; i++) {
-                answer += i;
-            }
-        }
-        return answer;
+        if(a==b) return a;
+        return (long) (Math.max(a,b) - Math.min(a,b) + 1) * (a + b) / 2;
     }
 }
