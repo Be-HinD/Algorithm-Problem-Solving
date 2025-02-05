@@ -1,52 +1,47 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
-//BOJ_17396
+//BOJ_1717
 public class Main {
-    static int N, M;
-    static int[] arr;
-    public static void main(String[] args) throws IOException {
+    static int N, M, res;
+    static int[] parent;
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());   //정점개수
+        M = Integer.parseInt(st.nextToken());   //연산개수
+
+        parent = new int[N+1];
+        for(int i=0; i<=N; i++) parent[i] = i;
+
         StringBuilder sb = new StringBuilder();
-
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
-        arr = new int[N+1];
-        for(int i=0; i<=N; i++) arr[i] = i;
-
-        for(int i=0; i<M; i++) {
+        while(M-->0) {
             st = new StringTokenizer(br.readLine());
-            int idx = Integer.parseInt(st.nextToken());
+            int oper = Integer.parseInt(st.nextToken());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            if(idx == 0) {
+            if(oper == 0) {
                 union(a,b);
             }
-            else {
-                int aRoot = find(a);
-                int bRoot = find(b);
-                if(aRoot == bRoot) sb.append("YES").append("\n");
-                else sb.append("NO").append("\n");
-            }
+            else sb.append(find(a) == find(b) ? "YES" : "NO").append("\n");
         }
 
         System.out.println(sb);
 
     }
 
-    private static int find(int x) {
-        if(x == arr[x]) return arr[x]; //부모와 현재가 같을 때
-        return arr[x] = find(arr[x]);    //부모를 찾을 때마다 최상위 부모로 항상 업데이트
+    static int find(int x) {
+        if(parent[x] == x) return x;
+        return parent[x] = find(parent[x]);
     }
 
-    private static void union(int a, int b) {
-        int aRoot = find(a);
-        int bRoot = find(b);
-        arr[bRoot] = aRoot ;
+    static void union(int a, int b) {
+        a = find(a);
+        b = find(b);
+
+        if(a < b) parent[b] = a;
+        else parent[a] = b;
     }
 }
