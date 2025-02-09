@@ -3,8 +3,8 @@ import java.util.*;
 
 //BOJ_1949
 public class Main {
-    static int n, res;
-    static int[] peopleArr, edgeCnt;
+    static int n;
+    static int[] peopleArr;
     static int[][] dp;
     static boolean[] v;
     static List<List<Integer>> list;
@@ -13,14 +13,17 @@ public class Main {
         StringTokenizer st;
 
         /**
-         * n == 10,000
-         * dfs = N^2 -> 시간제한 2초 가능
+         * 마을이 트리 구조로 이루어져 있음.
+         * 인접한 두 마을이 선택되는 경우는 없어야 함.
+         * 현재 정점을 기준으로 현재 정점을 일반 마을로 할지, 우수 마을로 할지 2분법
+         * 현재 정점을 기준으로 서브 트리 인구 합의 최대값을 탐색
+         * 서브 트리의 최적해를 부모 노드에서 활용
+         * 인접 리스트 기준 O(N)
          * **/
 
         n = Integer.parseInt(br.readLine());
 
         peopleArr = new int[n+1];
-        edgeCnt = new int[n+1];
 
         st = new StringTokenizer(br.readLine());
         for(int i=1; i<=n; i++) peopleArr[i] = Integer.parseInt(st.nextToken());
@@ -34,27 +37,17 @@ public class Main {
             int y = Integer.parseInt(st.nextToken());
             list.get(x).add(y);
             list.get(y).add(x);
-            edgeCnt[x]++;
-            edgeCnt[y]++;
-        }
-
-        int root = 0;
-        for(int i=1; i<=n; i++) {
-            if(edgeCnt[i] == 1) {
-                root = i;
-                break;
-            }
         }
 
         dp = new int[n+1][2];
-        dp[root][0] = 0;
-        dp[root][1] = peopleArr[root];
+        dp[1][0] = 0;
+        dp[1][1] = peopleArr[1];
 
         v = new boolean[n+1];
 
-        dfs(root);
+        dfs(1);
 
-        System.out.println(Math.max(dp[root][0], dp[root][1]));
+        System.out.println(Math.max(dp[1][0], dp[1][1]));
     }
 
     static void dfs(int node) {
