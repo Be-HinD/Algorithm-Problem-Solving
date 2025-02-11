@@ -5,30 +5,30 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
 
         int T = Integer.parseInt(br.readLine());
 
-        for(int i = 0; i < T; i++) {
-            int num = Integer.parseInt(br.readLine());
+        while(T-->0) {
+            int k = Integer.parseInt(br.readLine());
+            String[] arr = br.readLine().split(" ");
 
-            Queue<Long> pq = new PriorityQueue<>();
-            String[] data = br.readLine().split(" ");
+            PriorityQueue<Long> pq = new PriorityQueue<>();
+            for(String idx : arr) pq.offer(Long.parseLong(idx));
 
-            for(int j = 0; j < num; j++) {
-                pq.offer(Long.parseLong(data[j]));
+            long res = 0;
+            while(pq.size() != 1) {
+                long a = pq.poll();
+                long b = pq.poll();
+                res += a+b;
+                pq.offer(a+b);
             }
 
-            long total = 0;
-            while(pq.size() > 1) {
-                long num1 = pq.poll();
-                long num2 = pq.poll();
-                long sum = num1 + num2;
+            sb.append(res).append("\n");
 
-                total += sum;
-                pq.offer(sum);
-            }
-            System.out.println(total);
         }
+
+        System.out.println(sb);
 
     }
 }
