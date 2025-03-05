@@ -27,15 +27,9 @@ public class Main {
                 if(map[i][j] == 'J') jMap[i][j+1]++;
                 else if(map[i][j] == 'O') oMap[i][j+1]++;
                 else iMap[i][j+1]++;
-            }
-        }
-
-        // 2차원 누적합
-        for(int i=1; i<=n; i++) {
-            for(int j=1; j<=m; j++) {
-                jMap[i][j] += jMap[i][j-1] + jMap[i-1][j] - jMap[i-1][j-1];
-                oMap[i][j] += oMap[i][j-1] + oMap[i-1][j] - oMap[i-1][j-1];
-                iMap[i][j] += iMap[i][j-1] + iMap[i-1][j] - iMap[i-1][j-1];
+                jMap[i][j+1] += jMap[i][j] + jMap[i-1][j+1] - jMap[i-1][j];
+                oMap[i][j+1] += oMap[i][j] + oMap[i-1][j+1] - oMap[i-1][j];
+                iMap[i][j+1] += iMap[i][j] + iMap[i-1][j+1] - iMap[i-1][j];
             }
         }
 
