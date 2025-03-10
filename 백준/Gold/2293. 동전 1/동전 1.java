@@ -1,30 +1,34 @@
 import java.io.*;
 import java.util.*;
 
-//BOJ_2293 동전 1
+//BOJ_2293
 public class Main {
-    static int N, K;
-    public static void main(String[] args) throws Exception {
+    static int n, k;
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
-        K = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
 
-        int[] coins = new int[N+1];
-        for(int i=1; i<=N; i++) {
+        int[] dp = new int[k+1];
+        dp[0] = 1;
+
+        int[] coins = new int[n];
+        for(int i=0; i<n; i++) {
             coins[i] = Integer.parseInt(br.readLine());
         }
 
-        int[] dp = new int[K+1];
-        dp[0] = 1;
-        for(int i=1; i<=N; i++) {
-            int coin = coins[i];
-            for(int j=coin; j<=K; j++) {
-                dp[j] += dp[j-coin];
+        for(int i=1; i<=n; i++) {
+            int coin = coins[i-1];
+            for(int j=0; j<=k; j++) {
+                if(j >= coin) {
+                    dp[j] += dp[j-coin];
+                }
             }
         }
 
-        System.out.println(dp[K]);
+        System.out.println(dp[k]);
+
     }
 }
