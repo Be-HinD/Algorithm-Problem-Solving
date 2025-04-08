@@ -1,71 +1,72 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.*;
+import java.util.*;
 
+//BOJ_1260
 public class Main {
-    static int N, M, V; //정점 수, 간선 수, 시작 노드
-    static int[][] graph;
+    static int n, m, v;
+    static List<List<Integer>> list;
     static boolean[] visited;
-
+    static StringBuilder sb;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        V = Integer.parseInt(st.nextToken());
 
-        //그래프 초기화
-        graph = new int[N+1][N+1];
-        for(int i = 0; i<M; i++) {
-            int x, y;
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        v = Integer.parseInt(st.nextToken());
+
+        list = new ArrayList<>();
+        for(int i=0; i<=n; i++) list.add(new ArrayList<>());
+
+        visited = new boolean[n+1];
+
+        for(int i=0; i<m; i++) {
             st = new StringTokenizer(br.readLine());
-            x = Integer.parseInt(st.nextToken());
-            y = Integer.parseInt(st.nextToken());
-            graph[x][y] = 1;
-            graph[y][x] = 1;
-
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            list.get(x).add(y);
+            list.get(y).add(x);
         }
 
-        visited = new boolean[N+1];
-        dfs(V);
-        System.out.println();
-        visited = new boolean[N+1];
-        bfs(V);
-    }
-    //깊이 우선 탐색
-    static void dfs(int idx){
-        visited[idx] = true;
-        System.out.print(idx + " ");
-        if(idx == graph.length) {
-            return;
+        for(int i=0; i<=n; i++) {
+            Collections.sort(list.get(i));
         }
-        for(int i=1; i< graph.length; i++){
-            if(graph[idx][i] == 1 && !visited[i]){
-                dfs(i);
-            }
-        }
+
+        visited[v] = true;
+
+        sb = new StringBuilder();
+        dfs(v);
+        System.out.println(sb.toString());
+
+        sb = new StringBuilder();
+        visited = new boolean[n+1];
+        bfs(v);
+        System.out.print(sb.toString());
     }
 
-    //너비 우선 탐색
-    static void bfs(int idx) {
-        Queue<Integer> queue = new LinkedList<Integer>();
+    static void dfs(int idx) {
+        sb.append(idx).append(" ");
 
-        queue.add(idx);
-        visited[idx] = true;
-        System.out.print(idx + " ");
+        for(int next : list.get(idx)) {
+            if(visited[next]) continue;
+            visited[next] = true;
+            dfs(next);
+        }
+    }
 
-        while(!queue.isEmpty()){
-            int s =queue.poll();
-            for(int i =1; i< graph.length;i++){
-                if(graph[s][i] == 1 && !visited[i]){
-                    queue.add(i);
-                    visited[i] = true;
-                    System.out.print(i + " ");
-                }
+    static void bfs(int start) {
+        Queue<Integer> q = new ArrayDeque<>();
+        q.offer(start);
+        visited[start] = true;
+
+        while(!q.isEmpty()) {
+            int idx = q.poll();
+            sb.append(idx).append(" ");
+
+            for(int next : list.get(idx)) {
+                if(visited[next]) continue;
+                q.offer(next);
+                visited[next] = true;
             }
         }
     }
