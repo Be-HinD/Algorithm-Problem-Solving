@@ -16,28 +16,29 @@ public class Main {
     static int n;
     static long res;
     static int[] parent;
-    static List<Node> list;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
         n = Integer.parseInt(br.readLine());
 
-        list = new ArrayList<>();
+        PriorityQueue<Node> list = new PriorityQueue<>((o1, o2) -> o1.w - o2.w);
         for(int i=0; i<n; i++) {
             st = new StringTokenizer(br.readLine());
             for(int j=0; j<n; j++) {
-                list.add(new Node(i,j,Integer.parseInt(st.nextToken())));
+                list.offer(new Node(i,j,Integer.parseInt(st.nextToken())));
             }
         }
 
-        Collections.sort(list, (o1, o2) -> o1.w - o2.w);
-
+        // TODO : 가중치를 기준으로 오름차순 정렬
+        
         parent = new int[n];
         for(int i=0; i<n; i++) parent[i] = i;
 
-        for(Node cur : list) {
-            if(!union(cur.x, cur.y, cur.w)) continue;
+        // TODO : 연결할 수 있는 간선이라면 비용 추가
+        while(!list.isEmpty()) {
+            Node cur = list.poll();
+            if(!union(cur.x, cur.y)) continue;
             res += cur.w;
         }
 
@@ -50,7 +51,7 @@ public class Main {
         return parent[x] = find(parent[x]);
     }
 
-    static boolean union(int a, int b, int w) {
+    static boolean union(int a, int b) {
         int aRoot = find(a);
         int bRoot = find(b);
 
