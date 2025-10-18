@@ -2,6 +2,12 @@ class Solution {
     public long solution(int cap, int n, int[] d, int[] p) {
         long res = 0;
         
+        /**
+        <접근법 정리>
+        : 뒤에서부터 남아있는 곳은 무조건 가야함.
+        : 가는길에 배달이 완료되기 때문에 수거는 cap만큼 가능
+        **/
+        
         for(int i=n-1; i>=0; i--) {
             if(d[i]==0 && p[i]==0) continue;
             
