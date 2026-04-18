@@ -1,54 +1,59 @@
 import java.util.*;
 
 class Solution {
-    static class Node {
-        Node prev, next;
-        int idx;
-
-        Node(int idx) {
-            this.idx = idx;
-        }
-    }
-
+    static int[] prev, nxt;
     public String solution(int n, int k, String[] cmd) {
-        Node[] nodes = new Node[n];
-        for (int i = 0; i < n; i++) {
-            nodes[i] = new Node(i);
-            if (i > 0) {
-                nodes[i].prev = nodes[i - 1];
-                nodes[i - 1].next = nodes[i];
+        
+        prev = new int[n+2];
+        nxt = new int[n+2];
+        
+        for(int i=1; i<=n; i++) {
+            prev[i] = i-1;
+            nxt[i] = i+1;
+        }
+        
+        k++; //배열 구현 제약
+        
+        Stack<Integer> del = new Stack<>();
+        
+        for(String cur : cmd) {
+            StringTokenizer st = new StringTokenizer(cur);
+            
+            String command = st.nextToken();
+            if(command.equals("U")) {
+                int up = Integer.parseInt(st.nextToken());
+                for(int i=0; i<up; i++) {
+                    k = prev[k];
+                }
+            }
+            else if(command.equals("D")) {
+                int down = Integer.parseInt(st.nextToken());
+                for(int i=0; i<down; i++) {
+                    k = nxt[k];
+                }
+            }
+            else if(command.equals("C")) {  //삭제
+                del.add(k);
+                prev[nxt[k]] = prev[k];
+                nxt[prev[k]] = nxt[k];
+                if(nxt[k] == n+1) k = prev[k];
+                else k = nxt[k];
+            }
+            else {  //복구
+                int re = del.pop();
+                prev[nxt[re]] = re;
+                nxt[prev[re]] = re;
             }
         }
-
-        Node current = nodes[k];
-        Stack<Node> deleted = new Stack<>();
-
-        for (String c : cmd) {
-            char operation = c.charAt(0);
-
-            if (operation == 'D') {
-                int x = Integer.parseInt(c.substring(2));
-                while (x-- > 0) current = current.next;
-            } else if (operation == 'U') {
-                int x = Integer.parseInt(c.substring(2));
-                while (x-- > 0) current = current.prev;
-            } else if (operation == 'C') {
-                deleted.push(current);
-                if (current.prev != null) current.prev.next = current.next;
-                if (current.next != null) current.next.prev = current.prev;
-                current = (current.next != null) ? current.next : current.prev;
-            } else if (operation == 'Z') {
-                Node node = deleted.pop();
-                if (node.prev != null) node.prev.next = node;
-                if (node.next != null) node.next.prev = node;
-            }
+        
+        StringBuilder res = new StringBuilder();
+        for(int i=0; i<n; i++) res.append("O");
+        
+        while(!del.isEmpty()) {
+            int delIdx = del.pop();
+            res.replace(delIdx-1, delIdx, "X");
         }
-
-        StringBuilder result = new StringBuilder("O".repeat(n));
-        while (!deleted.isEmpty()) {
-            result.setCharAt(deleted.pop().idx, 'X');
-        }
-
-        return result.toString();
+        
+        return res.toString();
     }
 }
